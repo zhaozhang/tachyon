@@ -91,7 +91,7 @@ public class CommonConf extends Utils {
       ZOOKEEPER_LEADER_PATH = null;
     }
 
-    ASYNC_ENABLED = getBooleanProperty("tachyon.async.enabled", false);
+    ASYNC_ENABLED = getBooleanProperty("tachyon.async.enabled", true);
 
     MAX_COLUMNS = getIntProperty("tachyon.max.columns", 1000);
     MAX_TABLE_METADATA_BYTE = getIntProperty("tachyon.max.table.metadata.byte", Constants.MB * 5);

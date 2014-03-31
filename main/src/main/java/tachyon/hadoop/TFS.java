@@ -112,12 +112,13 @@ public class TFS extends FileSystem {
       LOG.info("create(" + cPath + ") : " + path + " " + index + " " + info + " " + fileId);
 
       TachyonFile file = mTFS.getFile(fileId);
-      // if (file.getBlockSizeByte() != blockSize) {
-      // throw new IOException("File already exist with a different blocksize "
-      // file.getBlockSizeByte() + " != " + blockSize);
-      // }
+      if (file.getBlockSizeByte() != blockSize) {
+        throw new IOException("File already exist with a different blocksize "
+            + file.getBlockSizeByte() + " != " + blockSize + " " + file);
+      }
       return new FSDataOutputStream(file.getOutStream(WriteType.ASYNC_THROUGH), null);
     }
+
     if (cPath.toString().contains(RECOMPUTE_PATH) && !cPath.toString().contains("SUCCESS")) {
       String path = Utils.getPathWithoutScheme(cPath);
       mTFS.createFile(path, blockSize);
@@ -133,10 +134,10 @@ public class TFS extends FileSystem {
       LOG.info("create(" + cPath + ") : " + path + " " + index + " " + info + " " + fileId);
 
       TachyonFile file = mTFS.getFile(fileId);
-      // if (file.getBlockSizeByte() != blockSize) {
-      // throw new IOException("File already exist with a different blocksize "
-      // file.getBlockSizeByte() + " != " + blockSize);
-      // }
+      if (file.getBlockSizeByte() != blockSize) {
+        throw new IOException("File already exist with a different blocksize "
+            + file.getBlockSizeByte() + " != " + blockSize + " " + file);
+      }
       return new FSDataOutputStream(file.getOutStream(WriteType.ASYNC_THROUGH), null);
     } else {
       String path = Utils.getPathWithoutScheme(cPath);
@@ -150,10 +151,10 @@ public class TFS extends FileSystem {
       }
 
       TachyonFile file = mTFS.getFile(fileId);
-      // if (file.getBlockSizeByte() != blockSize) {
-      // throw new IOException("File already exist with a different blocksize "
-      // file.getBlockSizeByte() + " != " + blockSize);
-      // }
+      if (file.getBlockSizeByte() != blockSize) {
+        throw new IOException("File already exist with a different blocksize "
+            + file.getBlockSizeByte() + " != " + blockSize + " " + file);
+      }
       return new FSDataOutputStream(file.getOutStream(type), null);
     }
   }
@@ -311,6 +312,10 @@ public class TFS extends FileSystem {
   @Override
   public boolean mkdirs(Path cPath, FsPermission permission) throws IOException {
     LOG.info("mkdirs(" + cPath + ", " + permission + ")");
+    if (mTFS.exist(Utils.getPathWithoutScheme(cPath))
+        && mTFS.getFile(Utils.getPathWithoutScheme(cPath)).isDirectory()) {
+      return true;
+    }
     return mTFS.mkdir(Utils.getPathWithoutScheme(cPath));
   }
 

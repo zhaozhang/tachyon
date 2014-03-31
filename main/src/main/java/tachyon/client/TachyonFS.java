@@ -974,7 +974,7 @@ public class TachyonFS {
    * 
    * @param path
    *          Directory path.
-   * @return true if the folder is created succeefully. faluse otherwise.
+   * @return true if the folder is created successfully. false otherwise.
    * @throws IOException
    */
   public synchronized boolean mkdir(String path) throws IOException {
