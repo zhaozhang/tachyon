@@ -112,10 +112,10 @@ public class TFS extends FileSystem {
       LOG.info("create(" + cPath + ") : " + path + " " + index + " " + info + " " + fileId);
 
       TachyonFile file = mTFS.getFile(fileId);
-      if (file.getBlockSizeByte() != blockSize) {
-        throw new IOException("File already exist with a different blocksize "
-            + file.getBlockSizeByte() + " != " + blockSize + " " + file);
-      }
+      // if (file.getBlockSizeByte() != blockSize) {
+      // throw new IOException("File already exist with a different blocksize "
+      // + file.getBlockSizeByte() + " != " + blockSize + " " + file);
+      // }
       return new FSDataOutputStream(file.getOutStream(WriteType.ASYNC_THROUGH), null);
     }
 
@@ -134,10 +134,10 @@ public class TFS extends FileSystem {
       LOG.info("create(" + cPath + ") : " + path + " " + index + " " + info + " " + fileId);
 
       TachyonFile file = mTFS.getFile(fileId);
-      if (file.getBlockSizeByte() != blockSize) {
-        throw new IOException("File already exist with a different blocksize "
-            + file.getBlockSizeByte() + " != " + blockSize + " " + file);
-      }
+      // if (file.getBlockSizeByte() != blockSize) {
+      // throw new IOException("File already exist with a different blocksize "
+      // + file.getBlockSizeByte() + " != " + blockSize + " " + file);
+      // }
       return new FSDataOutputStream(file.getOutStream(WriteType.ASYNC_THROUGH), null);
     } else {
       String path = Utils.getPathWithoutScheme(cPath);
@@ -151,10 +151,10 @@ public class TFS extends FileSystem {
       }
 
       TachyonFile file = mTFS.getFile(fileId);
-      if (file.getBlockSizeByte() != blockSize) {
-        throw new IOException("File already exist with a different blocksize "
-            + file.getBlockSizeByte() + " != " + blockSize + " " + file);
-      }
+      // if (file.getBlockSizeByte() != blockSize) {
+      // throw new IOException("File already exist with a different blocksize "
+      // + file.getBlockSizeByte() + " != " + blockSize + " " + file);
+      // }
       return new FSDataOutputStream(file.getOutStream(type), null);
     }
   }
