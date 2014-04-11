@@ -142,7 +142,7 @@ public class TFS extends FileSystem {
     } else {
       String path = Utils.getPathWithoutScheme(cPath);
       int fileId;
-      WriteType type = WriteType.CACHE_THROUGH;
+      WriteType type = WriteType.MUST_CACHE;
       if (mTFS.exist(path)) {
         fileId = mTFS.getFileId(path);
         type = WriteType.MUST_CACHE;
