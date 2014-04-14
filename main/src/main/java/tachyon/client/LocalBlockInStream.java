@@ -17,10 +17,16 @@ package tachyon.client;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
+
+import tachyon.Constants;
+
 /**
  * BlockInStream for local block.
  */
 public class LocalBlockInStream extends BlockInStream {
+  private static Logger LOG = Logger.getLogger(Constants.LOGGER_TYPE);
+
   private TachyonByteBuffer mTachyonBuffer = null;
   private ByteBuffer mBuffer = null;
 
@@ -30,6 +36,7 @@ public class LocalBlockInStream extends BlockInStream {
 
     mTachyonBuffer = buf;
     mBuffer = mTachyonBuffer.DATA;
+    LOG.info("We have a local block in stream!");
   }
 
   @Override
