@@ -976,6 +976,28 @@ public class TachyonFS {
     }
   }
 
+  public ClientStorePartitionInfo kv_getPartitionWithStoreId(int storeId, ByteBuffer key)
+      throws IOException {
+    connect();
+    try {
+      return mMasterClient.kv_getPartitionWithStoreId(storeId, key);
+    } catch (TException e) {
+      mConnected = false;
+      throw new IOException(e);
+    }
+  }
+
+  public synchronized ByteBuffer kv_getValue(ClientStorePartitionInfo partition, ByteBuffer key) {
+    InetSocketAddress workerAddress =
+        new InetSocketAddress(partition.location.mHost, partition.location.mPort);
+
+    LOG.info("Connecting " + (mIsWorkerLocal ? "local" : "remote") + " worker @ " + workerAddress);
+    // TODO improve this.
+    WorkerClient tWorkerClient = new WorkerClient(workerAddress, 1000);
+    ByteBuffer result = tWorkerClient.kv_getValue(partition, key);
+    return CommonUtils.cloneByteBuffer(result);
+  }
+
   public synchronized List<Integer> listFiles(String path, boolean recursive) throws IOException {
     connect();
     try {

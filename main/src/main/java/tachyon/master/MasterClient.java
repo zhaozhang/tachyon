@@ -294,6 +294,22 @@ public class MasterClient {
     return -1;
   }
 
+  public synchronized ClientStorePartitionInfo kv_getPartitionWithStoreId(int storeId,
+      ByteBuffer key) throws TException, IOException {
+    while (!mIsShutdown) {
+      connect();
+      try {
+        return mClient.kv_getPartitionWithStoreId(storeId, key);
+      } catch (TachyonException e) {
+        throw new IOException(e);
+      } catch (TException e) {
+        LOG.error(e.getMessage());
+        mIsConnected = false;
+      }
+    }
+    return null;
+  }
+
   public synchronized List<ClientFileInfo> listStatus(String path) throws IOException, TException {
     while (!mIsShutdown) {
       connect();

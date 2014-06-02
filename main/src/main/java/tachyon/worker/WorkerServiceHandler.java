@@ -81,6 +81,7 @@ public class WorkerServiceHandler implements WorkerService.Iface {
   public ByteBuffer kv_getValue(int storeId, int partitionId, ByteBuffer key)
       throws TachyonException, TException {
     // TODO Auto-generated method stub
+
     return null;
   }
 

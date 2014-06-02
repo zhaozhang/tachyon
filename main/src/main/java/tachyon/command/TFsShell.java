@@ -34,6 +34,7 @@ import tachyon.client.ReadType;
 import tachyon.client.TachyonFS;
 import tachyon.client.TachyonFile;
 import tachyon.client.WriteType;
+import tachyon.client.kv.KVStore;
 import tachyon.thrift.ClientBlockInfo;
 import tachyon.thrift.ClientFileInfo;
 import tachyon.util.CommonUtils;
@@ -257,6 +258,18 @@ public class TFsShell {
       System.out.println(block);
     }
     return 0;
+  }
+
+  public int kvget(String[] argv) throws IOException {
+    if (argv.length != 3) {
+      System.out.println("Usage: tfs kvget <storePath> <key>");
+      return -1;
+    }
+    String storePath = argv[1];
+    String key = argv[2];
+    KVStore store = KVStore.get(storePath);
+    ByteBuffer result = store.get(key.getBytes());
+    return result.getInt();
   }
 
   /**
@@ -521,6 +534,8 @@ public class TFsShell {
         exitCode = report(argv);
       } else if (cmd.equals("request")) {
         exitCode = request(argv);
+      } else if (cmd.equals("kvget")) {
+        exitCode = kvget(argv);
       } else {
         printUsage();
         return -1;

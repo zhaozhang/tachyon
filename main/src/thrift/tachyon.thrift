@@ -262,6 +262,6 @@ service WorkerService {
   void userHeartbeat(1: i64 userId)   // Local user send heartbeat to local worker to keep its temp folder.
 
   // Service for KVStore
-  binary kv_getValue(1: i32 storeId, 2: i32 partitionId, 3: binary key)
+  binary kv_getValue(1: ClientStorePartitionInfo info, 2: binary key)
     throws (1: TachyonException e)
 }

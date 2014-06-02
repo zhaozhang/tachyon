@@ -2,8 +2,11 @@ package tachyon.client.kv;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import tachyon.client.TachyonFS;
+import tachyon.thrift.ClientStorePartitionInfo;
 import tachyon.util.CommonUtils;
 
 /**
@@ -28,6 +31,8 @@ public class KVStore {
   private final int STORE_ID;
   private TachyonFS TFS;
 
+  private List<ClientStorePartitionInfo> mPartitions = new ArrayList<ClientStorePartitionInfo>();
+
   KVStore(String kvStorePath, boolean create) throws IOException {
     KV_STORE_PATH = kvStorePath;
     KV_STORE_PATH_NOSCHEMA = CommonUtils.getPathWithoutSchema(KV_STORE_PATH);
@@ -44,7 +49,34 @@ public class KVStore {
     return KVPartition.createKVPartition(TFS, STORE_ID, KV_STORE_PATH_NOSCHEMA, index);
   }
 
-  public ByteBuffer get(ByteBuffer key) {
+  public ByteBuffer get(byte[] key) throws IOException {
+    ByteBuffer tKey = ByteBuffer.wrap(key);
+    ClientStorePartitionInfo partition = getKVPartition(tKey);
+    if (partition == null) {
+      partition = TFS.kv_getPartitionWithStoreId(STORE_ID, tKey);
+      if (partition == null) {
+        return null;
+      }
+      for (int k = mPartitions.size(); k < partition.partitionIndex; k ++) {
+        mPartitions.add(null);
+      }
+      mPartitions.set(partition.partitionIndex, partition);
+    }
+
+    return TFS.kv_getValue(partition, tKey);
+  }
+
+  private ClientStorePartitionInfo getKVPartition(ByteBuffer key) {
+    for (int k = 0; k < mPartitions.size(); k ++) {
+      ClientStorePartitionInfo partition = mPartitions.get(k);
+      if (partition == null) {
+        continue;
+      }
+      if (partition.startKey.compareTo(key) <= 0 && partition.endKey.compareTo(key) >= 0) {
+        return partition;
+      }
+    }
+
     return null;
   }
 

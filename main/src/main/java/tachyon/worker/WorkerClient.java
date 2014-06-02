@@ -16,19 +16,21 @@ package tachyon.worker;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransportException;
-import org.apache.log4j.Logger;
 
 import tachyon.Constants;
 import tachyon.HeartbeatThread;
 import tachyon.conf.UserConf;
 import tachyon.thrift.BlockInfoException;
+import tachyon.thrift.ClientStorePartitionInfo;
 import tachyon.thrift.FailedToCheckpointException;
 import tachyon.thrift.FileDoesNotExistException;
 import tachyon.thrift.SuspectedFileSizeException;
@@ -125,6 +127,10 @@ public class WorkerClient {
 
   public synchronized boolean isConnected() {
     return mIsConnected;
+  }
+
+  public synchronized ByteBuffer kv_getValue(ClientStorePartitionInfo partition, ByteBuffer key) {
+    return CLIENT.kv_getValue(partition, key);
   }
 
   public synchronized void lockBlock(long blockId, long userId) throws TException {
