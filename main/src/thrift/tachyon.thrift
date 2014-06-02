@@ -116,6 +116,16 @@ exception DependencyDoesNotExistException {
   1: string message
 }
 
+struct ClientStorePartitionInfo {
+  1: i32 storeId
+  2: i32 partitionIndex
+  3: i32 dataFileId
+  4: i32 indexFileId
+  5: binary startKey
+  6: binary endKey
+  7: NetAddress location
+}
+
 service MasterService {
   bool addCheckpoint(1: i64 workerId, 2: i32 fileId, 3: i64 length, 4: string checkpointPath)
     throws (1: FileDoesNotExistException eP, 2: SuspectedFileSizeException eS, 3: BlockInfoException eB)
@@ -220,9 +230,12 @@ service MasterService {
   string user_getUnderfsAddress()
   
   // Services for KVStore
-  bool user_addKVPartition(1: string storePath, 2: i32 partitionIndex, 3: i32 dataFileId, 4: i32 indexFileId, 5: binary startKey, 6: binary endKey)
-  void user_noPartitionInWorker(1: i64 workerId, 2: string storePath, 3: i32 partitionIndex) 
-  bool worker_inChargeKVPartition(1: i32 storeId, 2: i32 partitionIndex)
+  i32 user_createKVPartition(1: string storePath)
+    throws (1: InvalidPathException eI, 2: FileAlreadyExistException eA)
+  bool user_addKVPartition(1: ClientStorePartitionInfo partitionInfo)
+  ClientStorePartitionInfo use_getPartition(1: binary key)
+  // void user_noPartitionInWorker(1: NetAddress workerAddress, 2: i32 storeId, 3: i32 partitionIndex) 
+  // bool worker_inChargeKVPartition(1: NetAddress address, 2: i32 storeId, 3: i32 partitionIndex)
 }
 
 service WorkerService {
