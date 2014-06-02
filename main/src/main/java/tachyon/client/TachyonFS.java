@@ -45,6 +45,7 @@ import tachyon.thrift.ClientBlockInfo;
 import tachyon.thrift.ClientDependencyInfo;
 import tachyon.thrift.ClientFileInfo;
 import tachyon.thrift.ClientRawTableInfo;
+import tachyon.thrift.ClientStorePartitionInfo;
 import tachyon.thrift.ClientWorkerInfo;
 import tachyon.thrift.FileDoesNotExistException;
 import tachyon.thrift.InvalidPathException;
@@ -953,6 +954,26 @@ public class TachyonFS {
 
   synchronized boolean isNeedPin(int fid) {
     return mClientFileInfos.get(fid).isNeedPin();
+  }
+
+  public void kv_addPartition(ClientStorePartitionInfo info) throws IOException {
+    connect();
+    try {
+      mMasterClient.kv_addPartition(info);
+    } catch (TException e) {
+      mConnected = false;
+      throw new IOException(e);
+    }
+  }
+
+  public int kv_createStore(String storePath) throws IOException {
+    connect();
+    try {
+      return mMasterClient.kv_createStore(storePath);
+    } catch (TException e) {
+      mConnected = false;
+      throw new IOException(e);
+    }
   }
 
   public synchronized List<Integer> listFiles(String path, boolean recursive) throws IOException {

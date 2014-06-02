@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransportException;
-import org.apache.log4j.Logger;
 
 import tachyon.Constants;
 import tachyon.HeartbeatThread;
@@ -39,6 +39,7 @@ import tachyon.thrift.ClientBlockInfo;
 import tachyon.thrift.ClientDependencyInfo;
 import tachyon.thrift.ClientFileInfo;
 import tachyon.thrift.ClientRawTableInfo;
+import tachyon.thrift.ClientStorePartitionInfo;
 import tachyon.thrift.ClientWorkerInfo;
 import tachyon.thrift.Command;
 import tachyon.thrift.DependencyDoesNotExistException;
@@ -261,6 +262,36 @@ public class MasterClient {
 
   public synchronized boolean isConnected() {
     return mIsConnected;
+  }
+
+  public synchronized void kv_addPartition(ClientStorePartitionInfo info) throws IOException,
+      TException {
+    while (!mIsShutdown) {
+      connect();
+      try {
+        mClient.kv_addPartition(info);
+      } catch (TachyonException e) {
+        throw new IOException(e);
+      } catch (TException e) {
+        LOG.error(e.getMessage());
+        mIsConnected = false;
+      }
+    }
+  }
+
+  public synchronized int kv_createStore(String storePath) throws IOException, TException {
+    while (!mIsShutdown) {
+      connect();
+      try {
+        return mClient.kv_createStore(storePath);
+      } catch (TachyonException e) {
+        throw new IOException(e);
+      } catch (TException e) {
+        LOG.error(e.getMessage());
+        mIsConnected = false;
+      }
+    }
+    return -1;
   }
 
   public synchronized List<ClientFileInfo> listStatus(String path) throws IOException, TException {

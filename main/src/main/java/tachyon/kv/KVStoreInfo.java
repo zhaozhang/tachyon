@@ -12,29 +12,29 @@ import tachyon.Constants;
 /**
  * Metadata of a key/value store in the master.
  */
-class KVStoreInfo {
+public class KVStoreInfo {
   private final Logger LOG = Logger.getLogger(Constants.LOGGER_TYPE);
 
-  private final int INODE_ID;
+  public final int INODE_ID;
 
   private List<KVPartitionInfo> mPartitions = new ArrayList<KVPartitionInfo>();
 
-  KVStoreInfo(int inodeId) {
+  public KVStoreInfo(int inodeId) {
     INODE_ID = inodeId;
   }
 
   void addPartition(KVPartitionInfo partition) throws IOException {
     // TODO this method is very inefficient currently.
 
-    while (mPartitions.size() < partition.INDEX) {
+    while (mPartitions.size() < partition.PARTITION_INDEX) {
       mPartitions.add(null);
     }
 
-    if (mPartitions.get(partition.INDEX) != null) {
+    if (mPartitions.get(partition.PARTITION_INDEX) != null) {
       throw new IOException("Partition has been added before: " + partition);
     }
 
-    mPartitions.set(partition.INDEX, partition);
+    mPartitions.set(partition.PARTITION_INDEX, partition);
 
     for (int i = 0; i < mPartitions.size(); i ++) {
       if (mPartitions.get(i) == null) {
@@ -44,7 +44,7 @@ class KVStoreInfo {
         if (mPartitions.get(j) == null) {
           continue;
         }
-        int result = mPartitions.get(i).END.compareTo(mPartitions.get(j).START);
+        int result = mPartitions.get(i).END_KEY.compareTo(mPartitions.get(j).START_KEY);
         if (result > 0) {
           throw new IOException("Wrong partition order: " + mPartitions.get(i) + " > "
               + mPartitions.get(j));
@@ -62,10 +62,14 @@ class KVStoreInfo {
         LOG.warn("KVStore " + INODE_ID + " has null partition when being queried.");
         continue;
       }
-      if (partition.START.compareTo(buf) <= 0 && partition.END.compareTo(buf) >= 0) {
+      if (partition.START_KEY.compareTo(buf) <= 0 && partition.END_KEY.compareTo(buf) >= 0) {
         return partition;
       }
     }
     return null;
+  }
+
+  KVPartitionInfo getPartition(int partitionIndex) {
+    return mPartitions.get(partitionIndex);
   }
 }

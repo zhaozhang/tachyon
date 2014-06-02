@@ -10,6 +10,7 @@ import tachyon.client.OutStream;
 import tachyon.client.TachyonFS;
 import tachyon.client.TachyonFile;
 import tachyon.client.WriteType;
+import tachyon.thrift.ClientStorePartitionInfo;
 import tachyon.util.CommonUtils;
 
 /**
@@ -19,52 +20,53 @@ import tachyon.util.CommonUtils;
  * step, it has only one implemention.
  */
 public class KVPartition {
-  public static KVPartition createKVPartition(KVStore kvStore, int index) throws IOException {
-    return new KVPartition(kvStore, index, true);
+  public static KVPartition createKVPartition(TachyonFS tfs, int storeId, String storePath,
+      int index) throws IOException {
+    return new KVPartition(tfs, storeId, storePath, index, true);
   }
 
-  public static KVPartition getKVPartition(KVStore kvStore, int index) throws IOException {
-    return new KVPartition(kvStore, index, false);
+  public static KVPartition
+      getKVPartition(TachyonFS tfs, int storeId, String storePath, int index) throws IOException {
+    return new KVPartition(tfs, storeId, storePath, index, false);
   }
 
   private final Logger LOG = Logger.getLogger(Constants.LOGGER_TYPE);
-
-  private final KVStore KV_STORE;
-  private final int INDEX;
-  private final boolean CREATE;
   private final TachyonFS TFS;
+  private final int STORE_ID;
+  private final String STORE_PATH;
+  private final int INDEX;
 
   // private final Serializer KEY_SER;
   // private final Serializer VALUE_SER;
 
-  private String mStorePath;
-  private String mPartitionPath;
+  private final boolean CREATE;
 
+  private String mPartitionPath;
   private String mDataFilePath;
   private TachyonFile mDataFile;
   private int mDataFileId;
-  private OutStream mDataFileOutStream;
 
+  private OutStream mDataFileOutStream;
   private String mIndexFilePath;
   private TachyonFile mIndexFile;
   private int mIndexFileId;
-  private OutStream mIndexFileOutStream;
 
+  private OutStream mIndexFileOutStream;
   private ByteBuffer mStartKey;
   private ByteBuffer mEndKey;
+
   private int mDataFileLocation;
 
-  KVPartition(KVStore kvStore, int index, boolean create) throws IOException {
-    KV_STORE = kvStore;
+  KVPartition(TachyonFS tfs, int storeId, String storePath, int index, boolean create)
+      throws IOException {
+    TFS = tfs;
+    STORE_ID = storeId;
+    STORE_PATH = storePath;
     INDEX = index;
     CREATE = create;
-    TFS = KV_STORE.getTFS();
 
-    String tPath = KV_STORE.getStorePath();
-    mPartitionPath = tPath.substring(tPath.indexOf("//") + 2);
-    mStorePath = mPartitionPath.substring(mPartitionPath.indexOf("/"));
     mPartitionPath =
-        CommonUtils.concat(mStorePath, "partition-" + CommonUtils.addLeadingZero(index, 5));
+        CommonUtils.concat(STORE_PATH, "partition-" + CommonUtils.addLeadingZero(index, 5));
     mDataFilePath = mPartitionPath + "-data";
     mIndexFilePath = mPartitionPath + "-index";
     LOG.info("Creating KV partition: " + toString());
@@ -96,7 +98,18 @@ public class KVPartition {
     if (CREATE) {
       mDataFileOutStream.close();
       mIndexFileOutStream.close();
-      // TFS.addKVPartition(mStorePath, INDEX, mDataFileId, mIndexFileId, mStartKey, mEndKey);
+      ClientStorePartitionInfo info = new ClientStorePartitionInfo();
+      info.setStoreId(STORE_ID);
+      info.setPartitionIndex(INDEX);
+      info.setDataFileId(mDataFileId);
+      info.setIndexFileId(mIndexFileId);
+      if (mStartKey == null) {
+        mStartKey = ByteBuffer.allocate(0);
+        mEndKey = ByteBuffer.allocate(0);
+      }
+      info.setStartKey(mStartKey.array());
+      info.setEndKey(mEndKey.array());
+      TFS.kv_addPartition(info);
     }
   }
 
@@ -127,18 +140,18 @@ public class KVPartition {
     mDataFileLocation += 4 + key.length + 4 + value.length;
   }
 
+  // public void put(ByteBuffer key, ByteBuffer value) {
+  // }
+
   public void put(String key, int value) throws IOException {
     put(key.getBytes(), ByteBuffer.allocate(4).putInt(value).array());
   }
-
-  // public void put(ByteBuffer key, ByteBuffer value) {
-  // }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("KVPartition(");
     sb.append("CREATE ").append(CREATE);
-    sb.append(" , mStorePath ").append(mStorePath);
+    sb.append(" , STORE_PATH ").append(STORE_PATH);
     sb.append(" , mPartitionPath ").append(mPartitionPath);
     sb.append(" , mDataFilePath ").append(mDataFilePath);
     sb.append(" , mIndexFilePath ").append(mIndexFilePath);

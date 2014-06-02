@@ -47,11 +47,15 @@ import tachyon.UnderFileSystem;
 import tachyon.UnderFileSystem.SpaceType;
 import tachyon.conf.CommonConf;
 import tachyon.conf.MasterConf;
+import tachyon.kv.KVPartitionInfo;
+import tachyon.kv.KVStoreInfo;
+import tachyon.kv.KVStoresInfo;
 import tachyon.thrift.BlockInfoException;
 import tachyon.thrift.ClientBlockInfo;
 import tachyon.thrift.ClientDependencyInfo;
 import tachyon.thrift.ClientFileInfo;
 import tachyon.thrift.ClientRawTableInfo;
+import tachyon.thrift.ClientStorePartitionInfo;
 import tachyon.thrift.ClientWorkerInfo;
 import tachyon.thrift.Command;
 import tachyon.thrift.CommandType;
@@ -263,6 +267,8 @@ public class MasterInfo implements ImageWriter {
   private HeartbeatThread mHeartbeatThread;
 
   private Thread mRecomputeThread;
+
+  private KVStoresInfo mKVStoresInfo = new KVStoresInfo();
 
   public MasterInfo(InetSocketAddress address, Journal journal) throws IOException {
     MASTER_CONF = MasterConf.get();
@@ -1751,6 +1757,83 @@ public class MasterInfo implements ImageWriter {
 
     mRecomputeThread = new Thread(new RecomputationScheduler());
     mRecomputeThread.start();
+  }
+
+  public boolean kv_addPartition(ClientStorePartitionInfo partitionInfo) throws TachyonException,
+      IOException {
+    return mKVStoresInfo.addPartition(partitionInfo);
+  }
+
+  public int kv_createStore(String storePath) throws InvalidPathException,
+      FileAlreadyExistException, TachyonException {
+    synchronized (mRoot) {
+      if (getFileId(storePath) != -1) {
+        throw new FileAlreadyExistException("Failed to create a KV Store: " + storePath);
+      }
+
+      if (!mkdir(storePath)) {
+        throw new TachyonException("Failed to create a KV Store: " + storePath);
+      }
+
+      int id = getFileId(storePath);
+
+      mKVStoresInfo.addKVStoreInfo(new KVStoreInfo(id));
+
+      return id;
+    }
+  }
+
+  public ClientStorePartitionInfo kv_getPartition(int storeId, ByteBuffer key)
+      throws TachyonException, FileDoesNotExistException {
+    KVPartitionInfo info = mKVStoresInfo.get(storeId, CommonUtils.cloneByteBuffer(key));
+    ClientStorePartitionInfo res = info.generateClientStorePartitionInfo();
+    if (!info.hasLocation()) {
+      int indexFileId = info.INDEX_FILE_ID;
+      List<ClientBlockInfo> blockInfo;
+      try {
+        blockInfo = getFileLocations(indexFileId);
+      } catch (IOException e) {
+        throw new TachyonException(e.getMessage());
+      }
+      res.setLocation(blockInfo.get(0).locations.get(0));
+      LOG.info("kv_getPartition empty location: " + res);
+    } else {
+      LOG.info("kv_getPartition with locations: " + res);
+    }
+    return res;
+  }
+
+  public boolean kv_inChargeKVPartition(NetAddress workerAddress, int storeId, int partitionIndex)
+      throws TachyonException {
+    // TODO the logic is wrong. Improve this.
+    KVPartitionInfo info = mKVStoresInfo.get(storeId, partitionIndex);
+    info.addLocation(workerAddress);
+    return true;
+  }
+
+  public ClientStorePartitionInfo kv_noPartitionInWorker(NetAddress workerAddress, int storeId,
+      int partitionIndex) throws TachyonException {
+    // TODO the logic is wrong. Improve this.
+    KVPartitionInfo info = mKVStoresInfo.get(storeId, partitionIndex);
+    info.removeLocation(workerAddress);
+
+    ClientStorePartitionInfo res = info.generateClientStorePartitionInfo();
+    if (!info.hasLocation()) {
+      int indexFileId = info.INDEX_FILE_ID;
+      List<ClientBlockInfo> blockInfo;
+      try {
+        blockInfo = getFileLocations(indexFileId);
+      } catch (FileDoesNotExistException e) {
+        throw new TachyonException(e.getMessage());
+      } catch (IOException e) {
+        throw new TachyonException(e.getMessage());
+      }
+      res.setLocation(blockInfo.get(0).locations.get(0));
+      LOG.info("kv_getPartition empty location: " + res);
+    } else {
+      LOG.info("kv_getPartition with locations: " + res);
+    }
+    return res;
   }
 
   /**

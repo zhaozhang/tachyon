@@ -87,43 +87,41 @@ public class MasterServiceHandler implements MasterService.Iface {
   @Override
   public boolean kv_addPartition(ClientStorePartitionInfo partitionInfo) throws TachyonException,
       TException {
-    // TODO Auto-generated method stub
-    return false;
+    try {
+      return mMasterInfo.kv_addPartition(partitionInfo);
+    } catch (IOException e) {
+      throw new TachyonException(e.getMessage());
+    }
   }
 
   @Override
   public int kv_createStore(String storePath) throws InvalidPathException,
       FileAlreadyExistException, TException {
-    // TODO Auto-generated method stub
-    return 0;
+    return mMasterInfo.kv_createStore(storePath);
   }
 
   @Override
   public ClientStorePartitionInfo kv_getPartitionWithStoreId(int storeId, ByteBuffer key)
       throws TachyonException, TException {
-    // TODO Auto-generated method stub
-    return null;
+    return mMasterInfo.kv_getPartition(storeId, key);
   }
 
   @Override
   public ClientStorePartitionInfo kv_getPartitionWithStorePath(String storePath, ByteBuffer key)
       throws TachyonException, TException {
-    // TODO Auto-generated method stub
-    return null;
+    return mMasterInfo.kv_getPartition(mMasterInfo.getFileId(storePath), key);
   }
 
   @Override
   public boolean kv_inChargeKVPartition(NetAddress workerAddress, int storeId, int partitionIndex)
       throws TachyonException, TException {
-    // TODO Auto-generated method stub
-    return false;
+    return mMasterInfo.kv_inChargeKVPartition(workerAddress, storeId, partitionIndex);
   }
 
   @Override
   public ClientStorePartitionInfo kv_noPartitionInWorker(NetAddress workerAddress, int storeId,
       int partitionIndex) throws TachyonException, TException {
-    // TODO Auto-generated method stub
-    return null;
+    return mMasterInfo.kv_noPartitionInWorker(workerAddress, storeId, partitionIndex);
   }
 
   @Override
