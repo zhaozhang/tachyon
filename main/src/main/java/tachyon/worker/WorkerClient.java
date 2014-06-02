@@ -129,7 +129,8 @@ public class WorkerClient {
     return mIsConnected;
   }
 
-  public synchronized ByteBuffer kv_getValue(ClientStorePartitionInfo partition, ByteBuffer key) {
+  public synchronized ByteBuffer kv_getValue(ClientStorePartitionInfo partition, ByteBuffer key)
+      throws TachyonException, TException {
     return CLIENT.kv_getValue(partition, key);
   }
 

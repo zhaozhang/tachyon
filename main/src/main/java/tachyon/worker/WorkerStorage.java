@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -40,12 +40,16 @@ import org.apache.thrift.TException;
 import tachyon.Constants;
 import tachyon.UnderFileSystem;
 import tachyon.Users;
+import tachyon.client.TachyonByteBuffer;
+import tachyon.client.TachyonFS;
+import tachyon.client.TachyonFile;
 import tachyon.conf.CommonConf;
 import tachyon.conf.WorkerConf;
 import tachyon.master.BlockInfo;
 import tachyon.master.MasterClient;
 import tachyon.thrift.BlockInfoException;
 import tachyon.thrift.ClientFileInfo;
+import tachyon.thrift.ClientStorePartitionInfo;
 import tachyon.thrift.Command;
 import tachyon.thrift.FailedToCheckpointException;
 import tachyon.thrift.FileDoesNotExistException;
@@ -574,6 +578,42 @@ public class WorkerStorage {
     }
   }
 
+  public ByteBuffer kv_getValue(ClientStorePartitionInfo info, ByteBuffer key) throws IOException {
+    TachyonFS tfs =
+        TachyonFS
+            .get("tachyon://" + mMasterAddress.getHostName() + ":" + mMasterAddress.getPort());
+
+    TachyonFile dataFile = tfs.getFile(info.getDataFileId());
+    TachyonFile indexFile = tfs.getFile(info.getIndexFileId());
+
+    TachyonByteBuffer dataBuffer = dataFile.readByteBuffer();
+    TachyonByteBuffer indexBuffer = indexFile.readByteBuffer();
+
+    ByteBuffer result = null;
+
+    ByteBuffer data = dataBuffer.DATA;
+    // HashMap<byte[], byte[]> kv = new HashMap<byte[], byte[]>();
+    while (data.hasRemaining()) {
+      int size = data.getInt();
+      byte[] tKey = new byte[size];
+      data.get(tKey);
+      size = data.getInt();
+      byte[] tValue = new byte[size];
+      data.get(tValue);
+      if (tempEqual(tKey, key.array())) {
+        result = ByteBuffer.allocate(tValue.length);
+        result.put(tValue);
+        result.flip();
+        break;
+      }
+    }
+
+    dataBuffer.close();
+    indexBuffer.close();
+
+    return result;
+  }
+
   public void lockBlock(long blockId, long userId) throws TException {
     synchronized (mUsersPerLockedBlock) {
       if (!mUsersPerLockedBlock.containsKey(blockId)) {
@@ -717,6 +757,18 @@ public class WorkerStorage {
     os.close();
 
     localFile.close();
+  }
+
+  private boolean tempEqual(byte[] a, byte[] b) {
+    if (a.length != b.length) {
+      return false;
+    }
+    for (int k = 0; k < a.length; k ++) {
+      if (a[k] != b[k]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public void unlockBlock(long blockId, long userId) throws TException {
