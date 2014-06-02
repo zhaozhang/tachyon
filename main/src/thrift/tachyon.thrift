@@ -204,6 +204,7 @@ service MasterService {
   bool user_mkdir(1: string path)
     throws (1: FileAlreadyExistException eR, 2: InvalidPathException eI, 3: TachyonException eT)
 
+  // Services for RawTables
   i32 user_createRawTable(1: string path, 2: i32 columns, 3: binary metadata)
     throws (1: FileAlreadyExistException eR, 2: InvalidPathException eI, 3: TableColumnException eT, 4: TachyonException eTa)
   i32 user_getRawTableId(1: string path)
@@ -217,6 +218,8 @@ service MasterService {
   i32 user_getNumberOfFiles(1:string path)
     throws (1: FileDoesNotExistException eR, 2: InvalidPathException eI)
   string user_getUnderfsAddress()
+  
+  // Services for KVStore
 }
 
 service WorkerService {
@@ -235,4 +238,6 @@ service WorkerService {
   bool requestSpace(1: i64 userId, 2: i64 requestBytes)   // Should change this to return i64, means how much space to grant.
   void unlockBlock(1: i64 blockId, 2: i64 userId) // unlock the file
   void userHeartbeat(1: i64 userId)   // Local user send heartbeat to local worker to keep its temp folder.
+  
+  // Service for KVStore
 }
