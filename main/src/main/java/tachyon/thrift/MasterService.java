@@ -151,11 +151,11 @@ public class MasterService {
 
     public String user_getUnderfsAddress() throws org.apache.thrift.TException;
 
-    public int user_createKVPartition(String storePath) throws InvalidPathException, FileAlreadyExistException, org.apache.thrift.TException;
+    public int kv_createStore(String storePath) throws InvalidPathException, FileAlreadyExistException, org.apache.thrift.TException;
 
-    public boolean user_addKVPartition(ClientStorePartitionInfo partitionInfo) throws org.apache.thrift.TException;
+    public boolean kv_addPartition(ClientStorePartitionInfo partitionInfo) throws org.apache.thrift.TException;
 
-    public ClientStorePartitionInfo use_getPartition(ByteBuffer key) throws org.apache.thrift.TException;
+    public ClientStorePartitionInfo kv_getPartition(ByteBuffer key) throws org.apache.thrift.TException;
 
   }
 
@@ -243,11 +243,11 @@ public class MasterService {
 
     public void user_getUnderfsAddress(org.apache.thrift.async.AsyncMethodCallback<AsyncClient.user_getUnderfsAddress_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void user_createKVPartition(String storePath, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.user_createKVPartition_call> resultHandler) throws org.apache.thrift.TException;
+    public void kv_createStore(String storePath, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.kv_createStore_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void user_addKVPartition(ClientStorePartitionInfo partitionInfo, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.user_addKVPartition_call> resultHandler) throws org.apache.thrift.TException;
+    public void kv_addPartition(ClientStorePartitionInfo partitionInfo, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.kv_addPartition_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void use_getPartition(ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.use_getPartition_call> resultHandler) throws org.apache.thrift.TException;
+    public void kv_getPartition(ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.kv_getPartition_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -1421,23 +1421,23 @@ public class MasterService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "user_getUnderfsAddress failed: unknown result");
     }
 
-    public int user_createKVPartition(String storePath) throws InvalidPathException, FileAlreadyExistException, org.apache.thrift.TException
+    public int kv_createStore(String storePath) throws InvalidPathException, FileAlreadyExistException, org.apache.thrift.TException
     {
-      send_user_createKVPartition(storePath);
-      return recv_user_createKVPartition();
+      send_kv_createStore(storePath);
+      return recv_kv_createStore();
     }
 
-    public void send_user_createKVPartition(String storePath) throws org.apache.thrift.TException
+    public void send_kv_createStore(String storePath) throws org.apache.thrift.TException
     {
-      user_createKVPartition_args args = new user_createKVPartition_args();
+      kv_createStore_args args = new kv_createStore_args();
       args.setStorePath(storePath);
-      sendBase("user_createKVPartition", args);
+      sendBase("kv_createStore", args);
     }
 
-    public int recv_user_createKVPartition() throws InvalidPathException, FileAlreadyExistException, org.apache.thrift.TException
+    public int recv_kv_createStore() throws InvalidPathException, FileAlreadyExistException, org.apache.thrift.TException
     {
-      user_createKVPartition_result result = new user_createKVPartition_result();
-      receiveBase(result, "user_createKVPartition");
+      kv_createStore_result result = new kv_createStore_result();
+      receiveBase(result, "kv_createStore");
       if (result.isSetSuccess()) {
         return result.success;
       }
@@ -1447,53 +1447,53 @@ public class MasterService {
       if (result.eA != null) {
         throw result.eA;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "user_createKVPartition failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "kv_createStore failed: unknown result");
     }
 
-    public boolean user_addKVPartition(ClientStorePartitionInfo partitionInfo) throws org.apache.thrift.TException
+    public boolean kv_addPartition(ClientStorePartitionInfo partitionInfo) throws org.apache.thrift.TException
     {
-      send_user_addKVPartition(partitionInfo);
-      return recv_user_addKVPartition();
+      send_kv_addPartition(partitionInfo);
+      return recv_kv_addPartition();
     }
 
-    public void send_user_addKVPartition(ClientStorePartitionInfo partitionInfo) throws org.apache.thrift.TException
+    public void send_kv_addPartition(ClientStorePartitionInfo partitionInfo) throws org.apache.thrift.TException
     {
-      user_addKVPartition_args args = new user_addKVPartition_args();
+      kv_addPartition_args args = new kv_addPartition_args();
       args.setPartitionInfo(partitionInfo);
-      sendBase("user_addKVPartition", args);
+      sendBase("kv_addPartition", args);
     }
 
-    public boolean recv_user_addKVPartition() throws org.apache.thrift.TException
+    public boolean recv_kv_addPartition() throws org.apache.thrift.TException
     {
-      user_addKVPartition_result result = new user_addKVPartition_result();
-      receiveBase(result, "user_addKVPartition");
+      kv_addPartition_result result = new kv_addPartition_result();
+      receiveBase(result, "kv_addPartition");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "user_addKVPartition failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "kv_addPartition failed: unknown result");
     }
 
-    public ClientStorePartitionInfo use_getPartition(ByteBuffer key) throws org.apache.thrift.TException
+    public ClientStorePartitionInfo kv_getPartition(ByteBuffer key) throws org.apache.thrift.TException
     {
-      send_use_getPartition(key);
-      return recv_use_getPartition();
+      send_kv_getPartition(key);
+      return recv_kv_getPartition();
     }
 
-    public void send_use_getPartition(ByteBuffer key) throws org.apache.thrift.TException
+    public void send_kv_getPartition(ByteBuffer key) throws org.apache.thrift.TException
     {
-      use_getPartition_args args = new use_getPartition_args();
+      kv_getPartition_args args = new kv_getPartition_args();
       args.setKey(key);
-      sendBase("use_getPartition", args);
+      sendBase("kv_getPartition", args);
     }
 
-    public ClientStorePartitionInfo recv_use_getPartition() throws org.apache.thrift.TException
+    public ClientStorePartitionInfo recv_kv_getPartition() throws org.apache.thrift.TException
     {
-      use_getPartition_result result = new use_getPartition_result();
-      receiveBase(result, "use_getPartition");
+      kv_getPartition_result result = new kv_getPartition_result();
+      receiveBase(result, "kv_getPartition");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "use_getPartition failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "kv_getPartition failed: unknown result");
     }
 
   }
@@ -2907,23 +2907,23 @@ public class MasterService {
       }
     }
 
-    public void user_createKVPartition(String storePath, org.apache.thrift.async.AsyncMethodCallback<user_createKVPartition_call> resultHandler) throws org.apache.thrift.TException {
+    public void kv_createStore(String storePath, org.apache.thrift.async.AsyncMethodCallback<kv_createStore_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      user_createKVPartition_call method_call = new user_createKVPartition_call(storePath, resultHandler, this, ___protocolFactory, ___transport);
+      kv_createStore_call method_call = new kv_createStore_call(storePath, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class user_createKVPartition_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class kv_createStore_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String storePath;
-      public user_createKVPartition_call(String storePath, org.apache.thrift.async.AsyncMethodCallback<user_createKVPartition_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public kv_createStore_call(String storePath, org.apache.thrift.async.AsyncMethodCallback<kv_createStore_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.storePath = storePath;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("user_createKVPartition", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        user_createKVPartition_args args = new user_createKVPartition_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("kv_createStore", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        kv_createStore_args args = new kv_createStore_args();
         args.setStorePath(storePath);
         args.write(prot);
         prot.writeMessageEnd();
@@ -2935,27 +2935,27 @@ public class MasterService {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_user_createKVPartition();
+        return (new Client(prot)).recv_kv_createStore();
       }
     }
 
-    public void user_addKVPartition(ClientStorePartitionInfo partitionInfo, org.apache.thrift.async.AsyncMethodCallback<user_addKVPartition_call> resultHandler) throws org.apache.thrift.TException {
+    public void kv_addPartition(ClientStorePartitionInfo partitionInfo, org.apache.thrift.async.AsyncMethodCallback<kv_addPartition_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      user_addKVPartition_call method_call = new user_addKVPartition_call(partitionInfo, resultHandler, this, ___protocolFactory, ___transport);
+      kv_addPartition_call method_call = new kv_addPartition_call(partitionInfo, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class user_addKVPartition_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class kv_addPartition_call extends org.apache.thrift.async.TAsyncMethodCall {
       private ClientStorePartitionInfo partitionInfo;
-      public user_addKVPartition_call(ClientStorePartitionInfo partitionInfo, org.apache.thrift.async.AsyncMethodCallback<user_addKVPartition_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public kv_addPartition_call(ClientStorePartitionInfo partitionInfo, org.apache.thrift.async.AsyncMethodCallback<kv_addPartition_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.partitionInfo = partitionInfo;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("user_addKVPartition", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        user_addKVPartition_args args = new user_addKVPartition_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("kv_addPartition", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        kv_addPartition_args args = new kv_addPartition_args();
         args.setPartitionInfo(partitionInfo);
         args.write(prot);
         prot.writeMessageEnd();
@@ -2967,27 +2967,27 @@ public class MasterService {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_user_addKVPartition();
+        return (new Client(prot)).recv_kv_addPartition();
       }
     }
 
-    public void use_getPartition(ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<use_getPartition_call> resultHandler) throws org.apache.thrift.TException {
+    public void kv_getPartition(ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<kv_getPartition_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      use_getPartition_call method_call = new use_getPartition_call(key, resultHandler, this, ___protocolFactory, ___transport);
+      kv_getPartition_call method_call = new kv_getPartition_call(key, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class use_getPartition_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class kv_getPartition_call extends org.apache.thrift.async.TAsyncMethodCall {
       private ByteBuffer key;
-      public use_getPartition_call(ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<use_getPartition_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public kv_getPartition_call(ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<kv_getPartition_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("use_getPartition", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        use_getPartition_args args = new use_getPartition_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("kv_getPartition", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        kv_getPartition_args args = new kv_getPartition_args();
         args.setKey(key);
         args.write(prot);
         prot.writeMessageEnd();
@@ -2999,7 +2999,7 @@ public class MasterService {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_use_getPartition();
+        return (new Client(prot)).recv_kv_getPartition();
       }
     }
 
@@ -3057,9 +3057,9 @@ public class MasterService {
       processMap.put("user_updateRawTableMetadata", new user_updateRawTableMetadata());
       processMap.put("user_getNumberOfFiles", new user_getNumberOfFiles());
       processMap.put("user_getUnderfsAddress", new user_getUnderfsAddress());
-      processMap.put("user_createKVPartition", new user_createKVPartition());
-      processMap.put("user_addKVPartition", new user_addKVPartition());
-      processMap.put("use_getPartition", new use_getPartition());
+      processMap.put("kv_createStore", new kv_createStore());
+      processMap.put("kv_addPartition", new kv_addPartition());
+      processMap.put("kv_getPartition", new kv_getPartition());
       return processMap;
     }
 
@@ -4105,23 +4105,23 @@ public class MasterService {
       }
     }
 
-    public static class user_createKVPartition<I extends Iface> extends org.apache.thrift.ProcessFunction<I, user_createKVPartition_args> {
-      public user_createKVPartition() {
-        super("user_createKVPartition");
+    public static class kv_createStore<I extends Iface> extends org.apache.thrift.ProcessFunction<I, kv_createStore_args> {
+      public kv_createStore() {
+        super("kv_createStore");
       }
 
-      public user_createKVPartition_args getEmptyArgsInstance() {
-        return new user_createKVPartition_args();
+      public kv_createStore_args getEmptyArgsInstance() {
+        return new kv_createStore_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public user_createKVPartition_result getResult(I iface, user_createKVPartition_args args) throws org.apache.thrift.TException {
-        user_createKVPartition_result result = new user_createKVPartition_result();
+      public kv_createStore_result getResult(I iface, kv_createStore_args args) throws org.apache.thrift.TException {
+        kv_createStore_result result = new kv_createStore_result();
         try {
-          result.success = iface.user_createKVPartition(args.storePath);
+          result.success = iface.kv_createStore(args.storePath);
           result.setSuccessIsSet(true);
         } catch (InvalidPathException eI) {
           result.eI = eI;
@@ -4132,43 +4132,43 @@ public class MasterService {
       }
     }
 
-    public static class user_addKVPartition<I extends Iface> extends org.apache.thrift.ProcessFunction<I, user_addKVPartition_args> {
-      public user_addKVPartition() {
-        super("user_addKVPartition");
+    public static class kv_addPartition<I extends Iface> extends org.apache.thrift.ProcessFunction<I, kv_addPartition_args> {
+      public kv_addPartition() {
+        super("kv_addPartition");
       }
 
-      public user_addKVPartition_args getEmptyArgsInstance() {
-        return new user_addKVPartition_args();
+      public kv_addPartition_args getEmptyArgsInstance() {
+        return new kv_addPartition_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public user_addKVPartition_result getResult(I iface, user_addKVPartition_args args) throws org.apache.thrift.TException {
-        user_addKVPartition_result result = new user_addKVPartition_result();
-        result.success = iface.user_addKVPartition(args.partitionInfo);
+      public kv_addPartition_result getResult(I iface, kv_addPartition_args args) throws org.apache.thrift.TException {
+        kv_addPartition_result result = new kv_addPartition_result();
+        result.success = iface.kv_addPartition(args.partitionInfo);
         result.setSuccessIsSet(true);
         return result;
       }
     }
 
-    public static class use_getPartition<I extends Iface> extends org.apache.thrift.ProcessFunction<I, use_getPartition_args> {
-      public use_getPartition() {
-        super("use_getPartition");
+    public static class kv_getPartition<I extends Iface> extends org.apache.thrift.ProcessFunction<I, kv_getPartition_args> {
+      public kv_getPartition() {
+        super("kv_getPartition");
       }
 
-      public use_getPartition_args getEmptyArgsInstance() {
-        return new use_getPartition_args();
+      public kv_getPartition_args getEmptyArgsInstance() {
+        return new kv_getPartition_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public use_getPartition_result getResult(I iface, use_getPartition_args args) throws org.apache.thrift.TException {
-        use_getPartition_result result = new use_getPartition_result();
-        result.success = iface.use_getPartition(args.key);
+      public kv_getPartition_result getResult(I iface, kv_getPartition_args args) throws org.apache.thrift.TException {
+        kv_getPartition_result result = new kv_getPartition_result();
+        result.success = iface.kv_getPartition(args.key);
         return result;
       }
     }
@@ -42632,15 +42632,15 @@ public class MasterService {
 
   }
 
-  public static class user_createKVPartition_args implements org.apache.thrift.TBase<user_createKVPartition_args, user_createKVPartition_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("user_createKVPartition_args");
+  public static class kv_createStore_args implements org.apache.thrift.TBase<kv_createStore_args, kv_createStore_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("kv_createStore_args");
 
     private static final org.apache.thrift.protocol.TField STORE_PATH_FIELD_DESC = new org.apache.thrift.protocol.TField("storePath", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new user_createKVPartition_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new user_createKVPartition_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new kv_createStore_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new kv_createStore_argsTupleSchemeFactory());
     }
 
     public String storePath; // required
@@ -42710,13 +42710,13 @@ public class MasterService {
       tmpMap.put(_Fields.STORE_PATH, new org.apache.thrift.meta_data.FieldMetaData("storePath", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(user_createKVPartition_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(kv_createStore_args.class, metaDataMap);
     }
 
-    public user_createKVPartition_args() {
+    public kv_createStore_args() {
     }
 
-    public user_createKVPartition_args(
+    public kv_createStore_args(
       String storePath)
     {
       this();
@@ -42726,14 +42726,14 @@ public class MasterService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public user_createKVPartition_args(user_createKVPartition_args other) {
+    public kv_createStore_args(kv_createStore_args other) {
       if (other.isSetStorePath()) {
         this.storePath = other.storePath;
       }
     }
 
-    public user_createKVPartition_args deepCopy() {
-      return new user_createKVPartition_args(this);
+    public kv_createStore_args deepCopy() {
+      return new kv_createStore_args(this);
     }
 
     @Override
@@ -42745,7 +42745,7 @@ public class MasterService {
       return this.storePath;
     }
 
-    public user_createKVPartition_args setStorePath(String storePath) {
+    public kv_createStore_args setStorePath(String storePath) {
       this.storePath = storePath;
       return this;
     }
@@ -42804,12 +42804,12 @@ public class MasterService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof user_createKVPartition_args)
-        return this.equals((user_createKVPartition_args)that);
+      if (that instanceof kv_createStore_args)
+        return this.equals((kv_createStore_args)that);
       return false;
     }
 
-    public boolean equals(user_createKVPartition_args that) {
+    public boolean equals(kv_createStore_args that) {
       if (that == null)
         return false;
 
@@ -42830,13 +42830,13 @@ public class MasterService {
       return 0;
     }
 
-    public int compareTo(user_createKVPartition_args other) {
+    public int compareTo(kv_createStore_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      user_createKVPartition_args typedOther = (user_createKVPartition_args)other;
+      kv_createStore_args typedOther = (kv_createStore_args)other;
 
       lastComparison = Boolean.valueOf(isSetStorePath()).compareTo(typedOther.isSetStorePath());
       if (lastComparison != 0) {
@@ -42865,7 +42865,7 @@ public class MasterService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("user_createKVPartition_args(");
+      StringBuilder sb = new StringBuilder("kv_createStore_args(");
       boolean first = true;
 
       sb.append("storePath:");
@@ -42900,15 +42900,15 @@ public class MasterService {
       }
     }
 
-    private static class user_createKVPartition_argsStandardSchemeFactory implements SchemeFactory {
-      public user_createKVPartition_argsStandardScheme getScheme() {
-        return new user_createKVPartition_argsStandardScheme();
+    private static class kv_createStore_argsStandardSchemeFactory implements SchemeFactory {
+      public kv_createStore_argsStandardScheme getScheme() {
+        return new kv_createStore_argsStandardScheme();
       }
     }
 
-    private static class user_createKVPartition_argsStandardScheme extends StandardScheme<user_createKVPartition_args> {
+    private static class kv_createStore_argsStandardScheme extends StandardScheme<kv_createStore_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, user_createKVPartition_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, kv_createStore_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -42937,7 +42937,7 @@ public class MasterService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, user_createKVPartition_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, kv_createStore_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -42952,16 +42952,16 @@ public class MasterService {
 
     }
 
-    private static class user_createKVPartition_argsTupleSchemeFactory implements SchemeFactory {
-      public user_createKVPartition_argsTupleScheme getScheme() {
-        return new user_createKVPartition_argsTupleScheme();
+    private static class kv_createStore_argsTupleSchemeFactory implements SchemeFactory {
+      public kv_createStore_argsTupleScheme getScheme() {
+        return new kv_createStore_argsTupleScheme();
       }
     }
 
-    private static class user_createKVPartition_argsTupleScheme extends TupleScheme<user_createKVPartition_args> {
+    private static class kv_createStore_argsTupleScheme extends TupleScheme<kv_createStore_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, user_createKVPartition_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, kv_createStore_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetStorePath()) {
@@ -42974,7 +42974,7 @@ public class MasterService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, user_createKVPartition_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, kv_createStore_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -42986,8 +42986,8 @@ public class MasterService {
 
   }
 
-  public static class user_createKVPartition_result implements org.apache.thrift.TBase<user_createKVPartition_result, user_createKVPartition_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("user_createKVPartition_result");
+  public static class kv_createStore_result implements org.apache.thrift.TBase<kv_createStore_result, kv_createStore_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("kv_createStore_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.I32, (short)0);
     private static final org.apache.thrift.protocol.TField E_I_FIELD_DESC = new org.apache.thrift.protocol.TField("eI", org.apache.thrift.protocol.TType.STRUCT, (short)1);
@@ -42995,8 +42995,8 @@ public class MasterService {
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new user_createKVPartition_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new user_createKVPartition_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new kv_createStore_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new kv_createStore_resultTupleSchemeFactory());
     }
 
     public int success; // required
@@ -43080,13 +43080,13 @@ public class MasterService {
       tmpMap.put(_Fields.E_A, new org.apache.thrift.meta_data.FieldMetaData("eA", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(user_createKVPartition_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(kv_createStore_result.class, metaDataMap);
     }
 
-    public user_createKVPartition_result() {
+    public kv_createStore_result() {
     }
 
-    public user_createKVPartition_result(
+    public kv_createStore_result(
       int success,
       InvalidPathException eI,
       FileAlreadyExistException eA)
@@ -43101,7 +43101,7 @@ public class MasterService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public user_createKVPartition_result(user_createKVPartition_result other) {
+    public kv_createStore_result(kv_createStore_result other) {
       __isset_bitfield = other.__isset_bitfield;
       this.success = other.success;
       if (other.isSetEI()) {
@@ -43112,8 +43112,8 @@ public class MasterService {
       }
     }
 
-    public user_createKVPartition_result deepCopy() {
-      return new user_createKVPartition_result(this);
+    public kv_createStore_result deepCopy() {
+      return new kv_createStore_result(this);
     }
 
     @Override
@@ -43128,7 +43128,7 @@ public class MasterService {
       return this.success;
     }
 
-    public user_createKVPartition_result setSuccess(int success) {
+    public kv_createStore_result setSuccess(int success) {
       this.success = success;
       setSuccessIsSet(true);
       return this;
@@ -43151,7 +43151,7 @@ public class MasterService {
       return this.eI;
     }
 
-    public user_createKVPartition_result setEI(InvalidPathException eI) {
+    public kv_createStore_result setEI(InvalidPathException eI) {
       this.eI = eI;
       return this;
     }
@@ -43175,7 +43175,7 @@ public class MasterService {
       return this.eA;
     }
 
-    public user_createKVPartition_result setEA(FileAlreadyExistException eA) {
+    public kv_createStore_result setEA(FileAlreadyExistException eA) {
       this.eA = eA;
       return this;
     }
@@ -43260,12 +43260,12 @@ public class MasterService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof user_createKVPartition_result)
-        return this.equals((user_createKVPartition_result)that);
+      if (that instanceof kv_createStore_result)
+        return this.equals((kv_createStore_result)that);
       return false;
     }
 
-    public boolean equals(user_createKVPartition_result that) {
+    public boolean equals(kv_createStore_result that) {
       if (that == null)
         return false;
 
@@ -43304,13 +43304,13 @@ public class MasterService {
       return 0;
     }
 
-    public int compareTo(user_createKVPartition_result other) {
+    public int compareTo(kv_createStore_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      user_createKVPartition_result typedOther = (user_createKVPartition_result)other;
+      kv_createStore_result typedOther = (kv_createStore_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {
@@ -43359,7 +43359,7 @@ public class MasterService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("user_createKVPartition_result(");
+      StringBuilder sb = new StringBuilder("kv_createStore_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -43408,15 +43408,15 @@ public class MasterService {
       }
     }
 
-    private static class user_createKVPartition_resultStandardSchemeFactory implements SchemeFactory {
-      public user_createKVPartition_resultStandardScheme getScheme() {
-        return new user_createKVPartition_resultStandardScheme();
+    private static class kv_createStore_resultStandardSchemeFactory implements SchemeFactory {
+      public kv_createStore_resultStandardScheme getScheme() {
+        return new kv_createStore_resultStandardScheme();
       }
     }
 
-    private static class user_createKVPartition_resultStandardScheme extends StandardScheme<user_createKVPartition_result> {
+    private static class kv_createStore_resultStandardScheme extends StandardScheme<kv_createStore_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, user_createKVPartition_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, kv_createStore_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -43463,7 +43463,7 @@ public class MasterService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, user_createKVPartition_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, kv_createStore_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -43488,16 +43488,16 @@ public class MasterService {
 
     }
 
-    private static class user_createKVPartition_resultTupleSchemeFactory implements SchemeFactory {
-      public user_createKVPartition_resultTupleScheme getScheme() {
-        return new user_createKVPartition_resultTupleScheme();
+    private static class kv_createStore_resultTupleSchemeFactory implements SchemeFactory {
+      public kv_createStore_resultTupleScheme getScheme() {
+        return new kv_createStore_resultTupleScheme();
       }
     }
 
-    private static class user_createKVPartition_resultTupleScheme extends TupleScheme<user_createKVPartition_result> {
+    private static class kv_createStore_resultTupleScheme extends TupleScheme<kv_createStore_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, user_createKVPartition_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, kv_createStore_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -43522,7 +43522,7 @@ public class MasterService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, user_createKVPartition_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, kv_createStore_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -43544,15 +43544,15 @@ public class MasterService {
 
   }
 
-  public static class user_addKVPartition_args implements org.apache.thrift.TBase<user_addKVPartition_args, user_addKVPartition_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("user_addKVPartition_args");
+  public static class kv_addPartition_args implements org.apache.thrift.TBase<kv_addPartition_args, kv_addPartition_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("kv_addPartition_args");
 
     private static final org.apache.thrift.protocol.TField PARTITION_INFO_FIELD_DESC = new org.apache.thrift.protocol.TField("partitionInfo", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new user_addKVPartition_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new user_addKVPartition_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new kv_addPartition_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new kv_addPartition_argsTupleSchemeFactory());
     }
 
     public ClientStorePartitionInfo partitionInfo; // required
@@ -43622,13 +43622,13 @@ public class MasterService {
       tmpMap.put(_Fields.PARTITION_INFO, new org.apache.thrift.meta_data.FieldMetaData("partitionInfo", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ClientStorePartitionInfo.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(user_addKVPartition_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(kv_addPartition_args.class, metaDataMap);
     }
 
-    public user_addKVPartition_args() {
+    public kv_addPartition_args() {
     }
 
-    public user_addKVPartition_args(
+    public kv_addPartition_args(
       ClientStorePartitionInfo partitionInfo)
     {
       this();
@@ -43638,14 +43638,14 @@ public class MasterService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public user_addKVPartition_args(user_addKVPartition_args other) {
+    public kv_addPartition_args(kv_addPartition_args other) {
       if (other.isSetPartitionInfo()) {
         this.partitionInfo = new ClientStorePartitionInfo(other.partitionInfo);
       }
     }
 
-    public user_addKVPartition_args deepCopy() {
-      return new user_addKVPartition_args(this);
+    public kv_addPartition_args deepCopy() {
+      return new kv_addPartition_args(this);
     }
 
     @Override
@@ -43657,7 +43657,7 @@ public class MasterService {
       return this.partitionInfo;
     }
 
-    public user_addKVPartition_args setPartitionInfo(ClientStorePartitionInfo partitionInfo) {
+    public kv_addPartition_args setPartitionInfo(ClientStorePartitionInfo partitionInfo) {
       this.partitionInfo = partitionInfo;
       return this;
     }
@@ -43716,12 +43716,12 @@ public class MasterService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof user_addKVPartition_args)
-        return this.equals((user_addKVPartition_args)that);
+      if (that instanceof kv_addPartition_args)
+        return this.equals((kv_addPartition_args)that);
       return false;
     }
 
-    public boolean equals(user_addKVPartition_args that) {
+    public boolean equals(kv_addPartition_args that) {
       if (that == null)
         return false;
 
@@ -43742,13 +43742,13 @@ public class MasterService {
       return 0;
     }
 
-    public int compareTo(user_addKVPartition_args other) {
+    public int compareTo(kv_addPartition_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      user_addKVPartition_args typedOther = (user_addKVPartition_args)other;
+      kv_addPartition_args typedOther = (kv_addPartition_args)other;
 
       lastComparison = Boolean.valueOf(isSetPartitionInfo()).compareTo(typedOther.isSetPartitionInfo());
       if (lastComparison != 0) {
@@ -43777,7 +43777,7 @@ public class MasterService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("user_addKVPartition_args(");
+      StringBuilder sb = new StringBuilder("kv_addPartition_args(");
       boolean first = true;
 
       sb.append("partitionInfo:");
@@ -43815,15 +43815,15 @@ public class MasterService {
       }
     }
 
-    private static class user_addKVPartition_argsStandardSchemeFactory implements SchemeFactory {
-      public user_addKVPartition_argsStandardScheme getScheme() {
-        return new user_addKVPartition_argsStandardScheme();
+    private static class kv_addPartition_argsStandardSchemeFactory implements SchemeFactory {
+      public kv_addPartition_argsStandardScheme getScheme() {
+        return new kv_addPartition_argsStandardScheme();
       }
     }
 
-    private static class user_addKVPartition_argsStandardScheme extends StandardScheme<user_addKVPartition_args> {
+    private static class kv_addPartition_argsStandardScheme extends StandardScheme<kv_addPartition_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, user_addKVPartition_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, kv_addPartition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -43853,7 +43853,7 @@ public class MasterService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, user_addKVPartition_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, kv_addPartition_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -43868,16 +43868,16 @@ public class MasterService {
 
     }
 
-    private static class user_addKVPartition_argsTupleSchemeFactory implements SchemeFactory {
-      public user_addKVPartition_argsTupleScheme getScheme() {
-        return new user_addKVPartition_argsTupleScheme();
+    private static class kv_addPartition_argsTupleSchemeFactory implements SchemeFactory {
+      public kv_addPartition_argsTupleScheme getScheme() {
+        return new kv_addPartition_argsTupleScheme();
       }
     }
 
-    private static class user_addKVPartition_argsTupleScheme extends TupleScheme<user_addKVPartition_args> {
+    private static class kv_addPartition_argsTupleScheme extends TupleScheme<kv_addPartition_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, user_addKVPartition_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, kv_addPartition_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetPartitionInfo()) {
@@ -43890,7 +43890,7 @@ public class MasterService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, user_addKVPartition_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, kv_addPartition_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -43903,15 +43903,15 @@ public class MasterService {
 
   }
 
-  public static class user_addKVPartition_result implements org.apache.thrift.TBase<user_addKVPartition_result, user_addKVPartition_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("user_addKVPartition_result");
+  public static class kv_addPartition_result implements org.apache.thrift.TBase<kv_addPartition_result, kv_addPartition_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("kv_addPartition_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new user_addKVPartition_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new user_addKVPartition_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new kv_addPartition_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new kv_addPartition_resultTupleSchemeFactory());
     }
 
     public boolean success; // required
@@ -43983,13 +43983,13 @@ public class MasterService {
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(user_addKVPartition_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(kv_addPartition_result.class, metaDataMap);
     }
 
-    public user_addKVPartition_result() {
+    public kv_addPartition_result() {
     }
 
-    public user_addKVPartition_result(
+    public kv_addPartition_result(
       boolean success)
     {
       this();
@@ -44000,13 +44000,13 @@ public class MasterService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public user_addKVPartition_result(user_addKVPartition_result other) {
+    public kv_addPartition_result(kv_addPartition_result other) {
       __isset_bitfield = other.__isset_bitfield;
       this.success = other.success;
     }
 
-    public user_addKVPartition_result deepCopy() {
-      return new user_addKVPartition_result(this);
+    public kv_addPartition_result deepCopy() {
+      return new kv_addPartition_result(this);
     }
 
     @Override
@@ -44019,7 +44019,7 @@ public class MasterService {
       return this.success;
     }
 
-    public user_addKVPartition_result setSuccess(boolean success) {
+    public kv_addPartition_result setSuccess(boolean success) {
       this.success = success;
       setSuccessIsSet(true);
       return this;
@@ -44077,12 +44077,12 @@ public class MasterService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof user_addKVPartition_result)
-        return this.equals((user_addKVPartition_result)that);
+      if (that instanceof kv_addPartition_result)
+        return this.equals((kv_addPartition_result)that);
       return false;
     }
 
-    public boolean equals(user_addKVPartition_result that) {
+    public boolean equals(kv_addPartition_result that) {
       if (that == null)
         return false;
 
@@ -44103,13 +44103,13 @@ public class MasterService {
       return 0;
     }
 
-    public int compareTo(user_addKVPartition_result other) {
+    public int compareTo(kv_addPartition_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      user_addKVPartition_result typedOther = (user_addKVPartition_result)other;
+      kv_addPartition_result typedOther = (kv_addPartition_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {
@@ -44138,7 +44138,7 @@ public class MasterService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("user_addKVPartition_result(");
+      StringBuilder sb = new StringBuilder("kv_addPartition_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -44171,15 +44171,15 @@ public class MasterService {
       }
     }
 
-    private static class user_addKVPartition_resultStandardSchemeFactory implements SchemeFactory {
-      public user_addKVPartition_resultStandardScheme getScheme() {
-        return new user_addKVPartition_resultStandardScheme();
+    private static class kv_addPartition_resultStandardSchemeFactory implements SchemeFactory {
+      public kv_addPartition_resultStandardScheme getScheme() {
+        return new kv_addPartition_resultStandardScheme();
       }
     }
 
-    private static class user_addKVPartition_resultStandardScheme extends StandardScheme<user_addKVPartition_result> {
+    private static class kv_addPartition_resultStandardScheme extends StandardScheme<kv_addPartition_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, user_addKVPartition_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, kv_addPartition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -44208,7 +44208,7 @@ public class MasterService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, user_addKVPartition_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, kv_addPartition_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -44223,16 +44223,16 @@ public class MasterService {
 
     }
 
-    private static class user_addKVPartition_resultTupleSchemeFactory implements SchemeFactory {
-      public user_addKVPartition_resultTupleScheme getScheme() {
-        return new user_addKVPartition_resultTupleScheme();
+    private static class kv_addPartition_resultTupleSchemeFactory implements SchemeFactory {
+      public kv_addPartition_resultTupleScheme getScheme() {
+        return new kv_addPartition_resultTupleScheme();
       }
     }
 
-    private static class user_addKVPartition_resultTupleScheme extends TupleScheme<user_addKVPartition_result> {
+    private static class kv_addPartition_resultTupleScheme extends TupleScheme<kv_addPartition_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, user_addKVPartition_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, kv_addPartition_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -44245,7 +44245,7 @@ public class MasterService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, user_addKVPartition_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, kv_addPartition_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -44257,15 +44257,15 @@ public class MasterService {
 
   }
 
-  public static class use_getPartition_args implements org.apache.thrift.TBase<use_getPartition_args, use_getPartition_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("use_getPartition_args");
+  public static class kv_getPartition_args implements org.apache.thrift.TBase<kv_getPartition_args, kv_getPartition_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("kv_getPartition_args");
 
     private static final org.apache.thrift.protocol.TField KEY_FIELD_DESC = new org.apache.thrift.protocol.TField("key", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new use_getPartition_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new use_getPartition_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new kv_getPartition_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new kv_getPartition_argsTupleSchemeFactory());
     }
 
     public ByteBuffer key; // required
@@ -44335,13 +44335,13 @@ public class MasterService {
       tmpMap.put(_Fields.KEY, new org.apache.thrift.meta_data.FieldMetaData("key", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , true)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(use_getPartition_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(kv_getPartition_args.class, metaDataMap);
     }
 
-    public use_getPartition_args() {
+    public kv_getPartition_args() {
     }
 
-    public use_getPartition_args(
+    public kv_getPartition_args(
       ByteBuffer key)
     {
       this();
@@ -44351,15 +44351,15 @@ public class MasterService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public use_getPartition_args(use_getPartition_args other) {
+    public kv_getPartition_args(kv_getPartition_args other) {
       if (other.isSetKey()) {
         this.key = org.apache.thrift.TBaseHelper.copyBinary(other.key);
 ;
       }
     }
 
-    public use_getPartition_args deepCopy() {
-      return new use_getPartition_args(this);
+    public kv_getPartition_args deepCopy() {
+      return new kv_getPartition_args(this);
     }
 
     @Override
@@ -44376,12 +44376,12 @@ public class MasterService {
       return key;
     }
 
-    public use_getPartition_args setKey(byte[] key) {
+    public kv_getPartition_args setKey(byte[] key) {
       setKey(key == null ? (ByteBuffer)null : ByteBuffer.wrap(key));
       return this;
     }
 
-    public use_getPartition_args setKey(ByteBuffer key) {
+    public kv_getPartition_args setKey(ByteBuffer key) {
       this.key = key;
       return this;
     }
@@ -44440,12 +44440,12 @@ public class MasterService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof use_getPartition_args)
-        return this.equals((use_getPartition_args)that);
+      if (that instanceof kv_getPartition_args)
+        return this.equals((kv_getPartition_args)that);
       return false;
     }
 
-    public boolean equals(use_getPartition_args that) {
+    public boolean equals(kv_getPartition_args that) {
       if (that == null)
         return false;
 
@@ -44466,13 +44466,13 @@ public class MasterService {
       return 0;
     }
 
-    public int compareTo(use_getPartition_args other) {
+    public int compareTo(kv_getPartition_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      use_getPartition_args typedOther = (use_getPartition_args)other;
+      kv_getPartition_args typedOther = (kv_getPartition_args)other;
 
       lastComparison = Boolean.valueOf(isSetKey()).compareTo(typedOther.isSetKey());
       if (lastComparison != 0) {
@@ -44501,7 +44501,7 @@ public class MasterService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("use_getPartition_args(");
+      StringBuilder sb = new StringBuilder("kv_getPartition_args(");
       boolean first = true;
 
       sb.append("key:");
@@ -44536,15 +44536,15 @@ public class MasterService {
       }
     }
 
-    private static class use_getPartition_argsStandardSchemeFactory implements SchemeFactory {
-      public use_getPartition_argsStandardScheme getScheme() {
-        return new use_getPartition_argsStandardScheme();
+    private static class kv_getPartition_argsStandardSchemeFactory implements SchemeFactory {
+      public kv_getPartition_argsStandardScheme getScheme() {
+        return new kv_getPartition_argsStandardScheme();
       }
     }
 
-    private static class use_getPartition_argsStandardScheme extends StandardScheme<use_getPartition_args> {
+    private static class kv_getPartition_argsStandardScheme extends StandardScheme<kv_getPartition_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, use_getPartition_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, kv_getPartition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -44573,7 +44573,7 @@ public class MasterService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, use_getPartition_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, kv_getPartition_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -44588,16 +44588,16 @@ public class MasterService {
 
     }
 
-    private static class use_getPartition_argsTupleSchemeFactory implements SchemeFactory {
-      public use_getPartition_argsTupleScheme getScheme() {
-        return new use_getPartition_argsTupleScheme();
+    private static class kv_getPartition_argsTupleSchemeFactory implements SchemeFactory {
+      public kv_getPartition_argsTupleScheme getScheme() {
+        return new kv_getPartition_argsTupleScheme();
       }
     }
 
-    private static class use_getPartition_argsTupleScheme extends TupleScheme<use_getPartition_args> {
+    private static class kv_getPartition_argsTupleScheme extends TupleScheme<kv_getPartition_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, use_getPartition_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, kv_getPartition_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetKey()) {
@@ -44610,7 +44610,7 @@ public class MasterService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, use_getPartition_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, kv_getPartition_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -44622,15 +44622,15 @@ public class MasterService {
 
   }
 
-  public static class use_getPartition_result implements org.apache.thrift.TBase<use_getPartition_result, use_getPartition_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("use_getPartition_result");
+  public static class kv_getPartition_result implements org.apache.thrift.TBase<kv_getPartition_result, kv_getPartition_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("kv_getPartition_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new use_getPartition_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new use_getPartition_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new kv_getPartition_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new kv_getPartition_resultTupleSchemeFactory());
     }
 
     public ClientStorePartitionInfo success; // required
@@ -44700,13 +44700,13 @@ public class MasterService {
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ClientStorePartitionInfo.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(use_getPartition_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(kv_getPartition_result.class, metaDataMap);
     }
 
-    public use_getPartition_result() {
+    public kv_getPartition_result() {
     }
 
-    public use_getPartition_result(
+    public kv_getPartition_result(
       ClientStorePartitionInfo success)
     {
       this();
@@ -44716,14 +44716,14 @@ public class MasterService {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public use_getPartition_result(use_getPartition_result other) {
+    public kv_getPartition_result(kv_getPartition_result other) {
       if (other.isSetSuccess()) {
         this.success = new ClientStorePartitionInfo(other.success);
       }
     }
 
-    public use_getPartition_result deepCopy() {
-      return new use_getPartition_result(this);
+    public kv_getPartition_result deepCopy() {
+      return new kv_getPartition_result(this);
     }
 
     @Override
@@ -44735,7 +44735,7 @@ public class MasterService {
       return this.success;
     }
 
-    public use_getPartition_result setSuccess(ClientStorePartitionInfo success) {
+    public kv_getPartition_result setSuccess(ClientStorePartitionInfo success) {
       this.success = success;
       return this;
     }
@@ -44794,12 +44794,12 @@ public class MasterService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof use_getPartition_result)
-        return this.equals((use_getPartition_result)that);
+      if (that instanceof kv_getPartition_result)
+        return this.equals((kv_getPartition_result)that);
       return false;
     }
 
-    public boolean equals(use_getPartition_result that) {
+    public boolean equals(kv_getPartition_result that) {
       if (that == null)
         return false;
 
@@ -44820,13 +44820,13 @@ public class MasterService {
       return 0;
     }
 
-    public int compareTo(use_getPartition_result other) {
+    public int compareTo(kv_getPartition_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      use_getPartition_result typedOther = (use_getPartition_result)other;
+      kv_getPartition_result typedOther = (kv_getPartition_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {
@@ -44855,7 +44855,7 @@ public class MasterService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("use_getPartition_result(");
+      StringBuilder sb = new StringBuilder("kv_getPartition_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -44893,15 +44893,15 @@ public class MasterService {
       }
     }
 
-    private static class use_getPartition_resultStandardSchemeFactory implements SchemeFactory {
-      public use_getPartition_resultStandardScheme getScheme() {
-        return new use_getPartition_resultStandardScheme();
+    private static class kv_getPartition_resultStandardSchemeFactory implements SchemeFactory {
+      public kv_getPartition_resultStandardScheme getScheme() {
+        return new kv_getPartition_resultStandardScheme();
       }
     }
 
-    private static class use_getPartition_resultStandardScheme extends StandardScheme<use_getPartition_result> {
+    private static class kv_getPartition_resultStandardScheme extends StandardScheme<kv_getPartition_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, use_getPartition_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, kv_getPartition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -44931,7 +44931,7 @@ public class MasterService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, use_getPartition_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, kv_getPartition_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -44946,16 +44946,16 @@ public class MasterService {
 
     }
 
-    private static class use_getPartition_resultTupleSchemeFactory implements SchemeFactory {
-      public use_getPartition_resultTupleScheme getScheme() {
-        return new use_getPartition_resultTupleScheme();
+    private static class kv_getPartition_resultTupleSchemeFactory implements SchemeFactory {
+      public kv_getPartition_resultTupleScheme getScheme() {
+        return new kv_getPartition_resultTupleScheme();
       }
     }
 
-    private static class use_getPartition_resultTupleScheme extends TupleScheme<use_getPartition_result> {
+    private static class kv_getPartition_resultTupleScheme extends TupleScheme<kv_getPartition_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, use_getPartition_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, kv_getPartition_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -44968,7 +44968,7 @@ public class MasterService {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, use_getPartition_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, kv_getPartition_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {

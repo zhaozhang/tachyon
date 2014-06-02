@@ -228,13 +228,13 @@ service MasterService {
   i32 user_getNumberOfFiles(1:string path)
     throws (1: FileDoesNotExistException eR, 2: InvalidPathException eI)
   string user_getUnderfsAddress()
-  
+
   // Services for KVStore
-  i32 user_createKVPartition(1: string storePath)
+  i32 kv_createStore(1: string storePath)
     throws (1: InvalidPathException eI, 2: FileAlreadyExistException eA)
-  bool user_addKVPartition(1: ClientStorePartitionInfo partitionInfo)
-  ClientStorePartitionInfo use_getPartition(1: binary key)
-  // void user_noPartitionInWorker(1: NetAddress workerAddress, 2: i32 storeId, 3: i32 partitionIndex) 
+  bool kv_addPartition(1: ClientStorePartitionInfo partitionInfo)
+  ClientStorePartitionInfo kv_getPartition(1: binary key)
+  // void user_noPartitionInWorker(1: NetAddress workerAddress, 2: i32 storeId, 3: i32 partitionIndex)
   // bool worker_inChargeKVPartition(1: NetAddress address, 2: i32 storeId, 3: i32 partitionIndex)
 }
 
@@ -254,6 +254,7 @@ service WorkerService {
   bool requestSpace(1: i64 userId, 2: i64 requestBytes)   // Should change this to return i64, means how much space to grant.
   void unlockBlock(1: i64 blockId, 2: i64 userId) // unlock the file
   void userHeartbeat(1: i64 userId)   // Local user send heartbeat to local worker to keep its temp folder.
-  
+
   // Service for KVStore
+  binary kv_getValue(1: binary key)
 }
