@@ -220,6 +220,9 @@ service MasterService {
   string user_getUnderfsAddress()
   
   // Services for KVStore
+  bool user_addKVPartition(1: string storePath, 2: i32 partitionIndex, 3: i32 dataFileId, 4: i32 indexFileId, 5: binary startKey, 6: binary endKey)
+  void user_noPartitionInWorker(1: i64 workerId, 2: string storePath, 3: i32 partitionIndex) 
+  bool worker_inChargeKVPartition(1: i32 storeId, 2: i32 partitionIndex)
 }
 
 service WorkerService {

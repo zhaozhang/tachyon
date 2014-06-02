@@ -1,5 +1,6 @@
 package tachyon.client.kv;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import tachyon.client.TachyonFS;
@@ -13,19 +14,19 @@ import tachyon.client.TachyonFS;
  * This class should be abstract. But for the first step, it only has one implementation.
  */
 public class KVStore {
-  private final String KV_STORE_PATH;
-  private TachyonFS TFS;
-
-  public static KVStore get(String kvStorePath) {
+  public static KVStore get(String kvStorePath) throws IOException {
     return new KVStore(kvStorePath);
   }
 
-  KVStore(String kvStorePath) {
+  private final String KV_STORE_PATH;
+  private TachyonFS TFS;
+
+  KVStore(String kvStorePath) throws IOException {
     KV_STORE_PATH = kvStorePath;
     TFS = TachyonFS.get(KV_STORE_PATH);
   }
 
-  public KVPartition createPartition(int index) {
+  public KVPartition createPartition(int index) throws IOException {
     return KVPartition.createKVPartition(this, index);
   }
 
@@ -35,5 +36,9 @@ public class KVStore {
 
   public String getStorePath() {
     return KV_STORE_PATH;
+  }
+
+  TachyonFS getTFS() {
+    return TFS;
   }
 }
