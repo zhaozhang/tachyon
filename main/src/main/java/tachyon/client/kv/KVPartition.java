@@ -62,10 +62,9 @@ public class KVPartition {
 
     String tPath = KV_STORE.getStorePath();
     mPartitionPath = tPath.substring(tPath.indexOf("//") + 2);
-    mStorePath = mPartitionPath.substring(0, mPartitionPath.indexOf("/"));
-    mPartitionPath = mPartitionPath.substring(mPartitionPath.indexOf("/"));
+    mStorePath = mPartitionPath.substring(mPartitionPath.indexOf("/"));
     mPartitionPath =
-        CommonUtils.concat(mPartitionPath, "partition-" + CommonUtils.addLeadingZero(index, 5));
+        CommonUtils.concat(mStorePath, "partition-" + CommonUtils.addLeadingZero(index, 5));
     mDataFilePath = mPartitionPath + "-data";
     mIndexFilePath = mPartitionPath + "-index";
     LOG.info("Creating KV partition: " + toString());

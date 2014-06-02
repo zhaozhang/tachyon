@@ -15,6 +15,7 @@
 package tachyon.worker;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.apache.thrift.TException;
 
@@ -74,6 +75,13 @@ public class WorkerServiceHandler implements WorkerService.Iface {
   @Override
   public String getUserUnderfsTempFolder(long userId) throws TException {
     return mWorkerStorage.getUserUnderfsTempFolder(userId);
+  }
+
+  @Override
+  public ByteBuffer kv_getValue(int storeId, int partitionId, ByteBuffer key)
+      throws TachyonException, TException {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override

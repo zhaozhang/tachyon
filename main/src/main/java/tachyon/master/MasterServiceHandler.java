@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.thrift.TException;
 import org.apache.log4j.Logger;
+import org.apache.thrift.TException;
 
 import tachyon.Constants;
 import tachyon.UnderFileSystem;
@@ -32,6 +32,7 @@ import tachyon.thrift.ClientBlockInfo;
 import tachyon.thrift.ClientDependencyInfo;
 import tachyon.thrift.ClientFileInfo;
 import tachyon.thrift.ClientRawTableInfo;
+import tachyon.thrift.ClientStorePartitionInfo;
 import tachyon.thrift.ClientWorkerInfo;
 import tachyon.thrift.Command;
 import tachyon.thrift.DependencyDoesNotExistException;
@@ -81,6 +82,48 @@ public class MasterServiceHandler implements MasterService.Iface {
   @Override
   public List<ClientWorkerInfo> getWorkersInfo() throws TException {
     return mMasterInfo.getWorkersInfo();
+  }
+
+  @Override
+  public boolean kv_addPartition(ClientStorePartitionInfo partitionInfo) throws TachyonException,
+      TException {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public int kv_createStore(String storePath) throws InvalidPathException,
+      FileAlreadyExistException, TException {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public ClientStorePartitionInfo kv_getPartitionWithStoreId(int storeId, ByteBuffer key)
+      throws TachyonException, TException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public ClientStorePartitionInfo kv_getPartitionWithStorePath(String storePath, ByteBuffer key)
+      throws TachyonException, TException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean kv_inChargeKVPartition(NetAddress workerAddress, int storeId, int partitionIndex)
+      throws TachyonException, TException {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public ClientStorePartitionInfo kv_noPartitionInWorker(NetAddress workerAddress, int storeId,
+      int partitionIndex) throws TachyonException, TException {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
