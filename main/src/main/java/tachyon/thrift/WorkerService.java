@@ -58,7 +58,7 @@ public class WorkerService {
 
     public void userHeartbeat(long userId) throws org.apache.thrift.TException;
 
-    public ByteBuffer kv_getValue(int storeId, int partitionId, ByteBuffer key) throws TachyonException, org.apache.thrift.TException;
+    public ByteBuffer kv_getValue(ClientStorePartitionInfo info, ByteBuffer key) throws TachyonException, org.apache.thrift.TException;
 
   }
 
@@ -88,7 +88,7 @@ public class WorkerService {
 
     public void userHeartbeat(long userId, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.userHeartbeat_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void kv_getValue(int storeId, int partitionId, ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.kv_getValue_call> resultHandler) throws org.apache.thrift.TException;
+    public void kv_getValue(ClientStorePartitionInfo info, ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.kv_getValue_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -396,17 +396,16 @@ public class WorkerService {
       return;
     }
 
-    public ByteBuffer kv_getValue(int storeId, int partitionId, ByteBuffer key) throws TachyonException, org.apache.thrift.TException
+    public ByteBuffer kv_getValue(ClientStorePartitionInfo info, ByteBuffer key) throws TachyonException, org.apache.thrift.TException
     {
-      send_kv_getValue(storeId, partitionId, key);
+      send_kv_getValue(info, key);
       return recv_kv_getValue();
     }
 
-    public void send_kv_getValue(int storeId, int partitionId, ByteBuffer key) throws org.apache.thrift.TException
+    public void send_kv_getValue(ClientStorePartitionInfo info, ByteBuffer key) throws org.apache.thrift.TException
     {
       kv_getValue_args args = new kv_getValue_args();
-      args.setStoreId(storeId);
-      args.setPartitionId(partitionId);
+      args.setInfo(info);
       args.setKey(key);
       sendBase("kv_getValue", args);
     }
@@ -841,29 +840,26 @@ public class WorkerService {
       }
     }
 
-    public void kv_getValue(int storeId, int partitionId, ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<kv_getValue_call> resultHandler) throws org.apache.thrift.TException {
+    public void kv_getValue(ClientStorePartitionInfo info, ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<kv_getValue_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      kv_getValue_call method_call = new kv_getValue_call(storeId, partitionId, key, resultHandler, this, ___protocolFactory, ___transport);
+      kv_getValue_call method_call = new kv_getValue_call(info, key, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class kv_getValue_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private int storeId;
-      private int partitionId;
+      private ClientStorePartitionInfo info;
       private ByteBuffer key;
-      public kv_getValue_call(int storeId, int partitionId, ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<kv_getValue_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public kv_getValue_call(ClientStorePartitionInfo info, ByteBuffer key, org.apache.thrift.async.AsyncMethodCallback<kv_getValue_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.storeId = storeId;
-        this.partitionId = partitionId;
+        this.info = info;
         this.key = key;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("kv_getValue", org.apache.thrift.protocol.TMessageType.CALL, 0));
         kv_getValue_args args = new kv_getValue_args();
-        args.setStoreId(storeId);
-        args.setPartitionId(partitionId);
+        args.setInfo(info);
         args.setKey(key);
         args.write(prot);
         prot.writeMessageEnd();
@@ -1188,7 +1184,7 @@ public class WorkerService {
       public kv_getValue_result getResult(I iface, kv_getValue_args args) throws org.apache.thrift.TException {
         kv_getValue_result result = new kv_getValue_result();
         try {
-          result.success = iface.kv_getValue(args.storeId, args.partitionId, args.key);
+          result.success = iface.kv_getValue(args.info, args.key);
         } catch (TachyonException e) {
           result.e = e;
         }
@@ -10207,9 +10203,8 @@ public class WorkerService {
   public static class kv_getValue_args implements org.apache.thrift.TBase<kv_getValue_args, kv_getValue_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("kv_getValue_args");
 
-    private static final org.apache.thrift.protocol.TField STORE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("storeId", org.apache.thrift.protocol.TType.I32, (short)1);
-    private static final org.apache.thrift.protocol.TField PARTITION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("partitionId", org.apache.thrift.protocol.TType.I32, (short)2);
-    private static final org.apache.thrift.protocol.TField KEY_FIELD_DESC = new org.apache.thrift.protocol.TField("key", org.apache.thrift.protocol.TType.STRING, (short)3);
+    private static final org.apache.thrift.protocol.TField INFO_FIELD_DESC = new org.apache.thrift.protocol.TField("info", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField KEY_FIELD_DESC = new org.apache.thrift.protocol.TField("key", org.apache.thrift.protocol.TType.STRING, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -10217,15 +10212,13 @@ public class WorkerService {
       schemes.put(TupleScheme.class, new kv_getValue_argsTupleSchemeFactory());
     }
 
-    public int storeId; // required
-    public int partitionId; // required
+    public ClientStorePartitionInfo info; // required
     public ByteBuffer key; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      STORE_ID((short)1, "storeId"),
-      PARTITION_ID((short)2, "partitionId"),
-      KEY((short)3, "key");
+      INFO((short)1, "info"),
+      KEY((short)2, "key");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -10240,11 +10233,9 @@ public class WorkerService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // STORE_ID
-            return STORE_ID;
-          case 2: // PARTITION_ID
-            return PARTITION_ID;
-          case 3: // KEY
+          case 1: // INFO
+            return INFO;
+          case 2: // KEY
             return KEY;
           default:
             return null;
@@ -10286,16 +10277,11 @@ public class WorkerService {
     }
 
     // isset id assignments
-    private static final int __STOREID_ISSET_ID = 0;
-    private static final int __PARTITIONID_ISSET_ID = 1;
-    private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.STORE_ID, new org.apache.thrift.meta_data.FieldMetaData("storeId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PARTITION_ID, new org.apache.thrift.meta_data.FieldMetaData("partitionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.INFO, new org.apache.thrift.meta_data.FieldMetaData("info", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ClientStorePartitionInfo.class)));
       tmpMap.put(_Fields.KEY, new org.apache.thrift.meta_data.FieldMetaData("key", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , true)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -10306,15 +10292,11 @@ public class WorkerService {
     }
 
     public kv_getValue_args(
-      int storeId,
-      int partitionId,
+      ClientStorePartitionInfo info,
       ByteBuffer key)
     {
       this();
-      this.storeId = storeId;
-      setStoreIdIsSet(true);
-      this.partitionId = partitionId;
-      setPartitionIdIsSet(true);
+      this.info = info;
       this.key = key;
     }
 
@@ -10322,9 +10304,9 @@ public class WorkerService {
      * Performs a deep copy on <i>other</i>.
      */
     public kv_getValue_args(kv_getValue_args other) {
-      __isset_bitfield = other.__isset_bitfield;
-      this.storeId = other.storeId;
-      this.partitionId = other.partitionId;
+      if (other.isSetInfo()) {
+        this.info = new ClientStorePartitionInfo(other.info);
+      }
       if (other.isSetKey()) {
         this.key = org.apache.thrift.TBaseHelper.copyBinary(other.key);
 ;
@@ -10337,57 +10319,32 @@ public class WorkerService {
 
     @Override
     public void clear() {
-      setStoreIdIsSet(false);
-      this.storeId = 0;
-      setPartitionIdIsSet(false);
-      this.partitionId = 0;
+      this.info = null;
       this.key = null;
     }
 
-    public int getStoreId() {
-      return this.storeId;
+    public ClientStorePartitionInfo getInfo() {
+      return this.info;
     }
 
-    public kv_getValue_args setStoreId(int storeId) {
-      this.storeId = storeId;
-      setStoreIdIsSet(true);
+    public kv_getValue_args setInfo(ClientStorePartitionInfo info) {
+      this.info = info;
       return this;
     }
 
-    public void unsetStoreId() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __STOREID_ISSET_ID);
+    public void unsetInfo() {
+      this.info = null;
     }
 
-    /** Returns true if field storeId is set (has been assigned a value) and false otherwise */
-    public boolean isSetStoreId() {
-      return EncodingUtils.testBit(__isset_bitfield, __STOREID_ISSET_ID);
+    /** Returns true if field info is set (has been assigned a value) and false otherwise */
+    public boolean isSetInfo() {
+      return this.info != null;
     }
 
-    public void setStoreIdIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __STOREID_ISSET_ID, value);
-    }
-
-    public int getPartitionId() {
-      return this.partitionId;
-    }
-
-    public kv_getValue_args setPartitionId(int partitionId) {
-      this.partitionId = partitionId;
-      setPartitionIdIsSet(true);
-      return this;
-    }
-
-    public void unsetPartitionId() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __PARTITIONID_ISSET_ID);
-    }
-
-    /** Returns true if field partitionId is set (has been assigned a value) and false otherwise */
-    public boolean isSetPartitionId() {
-      return EncodingUtils.testBit(__isset_bitfield, __PARTITIONID_ISSET_ID);
-    }
-
-    public void setPartitionIdIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PARTITIONID_ISSET_ID, value);
+    public void setInfoIsSet(boolean value) {
+      if (!value) {
+        this.info = null;
+      }
     }
 
     public byte[] getKey() {
@@ -10426,19 +10383,11 @@ public class WorkerService {
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case STORE_ID:
+      case INFO:
         if (value == null) {
-          unsetStoreId();
+          unsetInfo();
         } else {
-          setStoreId((Integer)value);
-        }
-        break;
-
-      case PARTITION_ID:
-        if (value == null) {
-          unsetPartitionId();
-        } else {
-          setPartitionId((Integer)value);
+          setInfo((ClientStorePartitionInfo)value);
         }
         break;
 
@@ -10455,11 +10404,8 @@ public class WorkerService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case STORE_ID:
-        return Integer.valueOf(getStoreId());
-
-      case PARTITION_ID:
-        return Integer.valueOf(getPartitionId());
+      case INFO:
+        return getInfo();
 
       case KEY:
         return getKey();
@@ -10475,10 +10421,8 @@ public class WorkerService {
       }
 
       switch (field) {
-      case STORE_ID:
-        return isSetStoreId();
-      case PARTITION_ID:
-        return isSetPartitionId();
+      case INFO:
+        return isSetInfo();
       case KEY:
         return isSetKey();
       }
@@ -10498,21 +10442,12 @@ public class WorkerService {
       if (that == null)
         return false;
 
-      boolean this_present_storeId = true;
-      boolean that_present_storeId = true;
-      if (this_present_storeId || that_present_storeId) {
-        if (!(this_present_storeId && that_present_storeId))
+      boolean this_present_info = true && this.isSetInfo();
+      boolean that_present_info = true && that.isSetInfo();
+      if (this_present_info || that_present_info) {
+        if (!(this_present_info && that_present_info))
           return false;
-        if (this.storeId != that.storeId)
-          return false;
-      }
-
-      boolean this_present_partitionId = true;
-      boolean that_present_partitionId = true;
-      if (this_present_partitionId || that_present_partitionId) {
-        if (!(this_present_partitionId && that_present_partitionId))
-          return false;
-        if (this.partitionId != that.partitionId)
+        if (!this.info.equals(that.info))
           return false;
       }
 
@@ -10541,22 +10476,12 @@ public class WorkerService {
       int lastComparison = 0;
       kv_getValue_args typedOther = (kv_getValue_args)other;
 
-      lastComparison = Boolean.valueOf(isSetStoreId()).compareTo(typedOther.isSetStoreId());
+      lastComparison = Boolean.valueOf(isSetInfo()).compareTo(typedOther.isSetInfo());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetStoreId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.storeId, typedOther.storeId);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetPartitionId()).compareTo(typedOther.isSetPartitionId());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetPartitionId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.partitionId, typedOther.partitionId);
+      if (isSetInfo()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.info, typedOther.info);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -10591,12 +10516,12 @@ public class WorkerService {
       StringBuilder sb = new StringBuilder("kv_getValue_args(");
       boolean first = true;
 
-      sb.append("storeId:");
-      sb.append(this.storeId);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("partitionId:");
-      sb.append(this.partitionId);
+      sb.append("info:");
+      if (this.info == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.info);
+      }
       first = false;
       if (!first) sb.append(", ");
       sb.append("key:");
@@ -10613,6 +10538,9 @@ public class WorkerService {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
+      if (info != null) {
+        info.validate();
+      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -10625,8 +10553,6 @@ public class WorkerService {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -10651,23 +10577,16 @@ public class WorkerService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // STORE_ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.storeId = iprot.readI32();
-                struct.setStoreIdIsSet(true);
+            case 1: // INFO
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.info = new ClientStorePartitionInfo();
+                struct.info.read(iprot);
+                struct.setInfoIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // PARTITION_ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.partitionId = iprot.readI32();
-                struct.setPartitionIdIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // KEY
+            case 2: // KEY
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.key = iprot.readBinary();
                 struct.setKeyIsSet(true);
@@ -10690,12 +10609,11 @@ public class WorkerService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldBegin(STORE_ID_FIELD_DESC);
-        oprot.writeI32(struct.storeId);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(PARTITION_ID_FIELD_DESC);
-        oprot.writeI32(struct.partitionId);
-        oprot.writeFieldEnd();
+        if (struct.info != null) {
+          oprot.writeFieldBegin(INFO_FIELD_DESC);
+          struct.info.write(oprot);
+          oprot.writeFieldEnd();
+        }
         if (struct.key != null) {
           oprot.writeFieldBegin(KEY_FIELD_DESC);
           oprot.writeBinary(struct.key);
@@ -10719,21 +10637,15 @@ public class WorkerService {
       public void write(org.apache.thrift.protocol.TProtocol prot, kv_getValue_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetStoreId()) {
+        if (struct.isSetInfo()) {
           optionals.set(0);
         }
-        if (struct.isSetPartitionId()) {
+        if (struct.isSetKey()) {
           optionals.set(1);
         }
-        if (struct.isSetKey()) {
-          optionals.set(2);
-        }
-        oprot.writeBitSet(optionals, 3);
-        if (struct.isSetStoreId()) {
-          oprot.writeI32(struct.storeId);
-        }
-        if (struct.isSetPartitionId()) {
-          oprot.writeI32(struct.partitionId);
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetInfo()) {
+          struct.info.write(oprot);
         }
         if (struct.isSetKey()) {
           oprot.writeBinary(struct.key);
@@ -10743,16 +10655,13 @@ public class WorkerService {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, kv_getValue_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(3);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
-          struct.storeId = iprot.readI32();
-          struct.setStoreIdIsSet(true);
+          struct.info = new ClientStorePartitionInfo();
+          struct.info.read(iprot);
+          struct.setInfoIsSet(true);
         }
         if (incoming.get(1)) {
-          struct.partitionId = iprot.readI32();
-          struct.setPartitionIdIsSet(true);
-        }
-        if (incoming.get(2)) {
           struct.key = iprot.readBinary();
           struct.setKeyIsSet(true);
         }
