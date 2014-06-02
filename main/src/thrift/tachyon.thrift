@@ -233,9 +233,15 @@ service MasterService {
   i32 kv_createStore(1: string storePath)
     throws (1: InvalidPathException eI, 2: FileAlreadyExistException eA)
   bool kv_addPartition(1: ClientStorePartitionInfo partitionInfo)
-  ClientStorePartitionInfo kv_getPartition(1: binary key)
-  // void user_noPartitionInWorker(1: NetAddress workerAddress, 2: i32 storeId, 3: i32 partitionIndex)
-  // bool worker_inChargeKVPartition(1: NetAddress address, 2: i32 storeId, 3: i32 partitionIndex)
+    throws (1: TachyonException e)
+  ClientStorePartitionInfo kv_getPartitionWithStoreId(1: i32 storeId, 2: binary key)
+    throws (1: TachyonException e)
+  ClientStorePartitionInfo kv_getPartitionWithStorePath(1: string storePath, 2: binary key)
+    throws (1: TachyonException e)
+  ClientStorePartitionInfo kv_noPartitionInWorker(1: NetAddress workerAddress, 2: i32 storeId, 3: i32 partitionIndex)
+    throws (1: TachyonException e)
+  bool kv_inChargeKVPartition(1: NetAddress workerAddress, 2: i32 storeId, 3: i32 partitionIndex)
+    throws (1: TachyonException e)
 }
 
 service WorkerService {
@@ -256,5 +262,6 @@ service WorkerService {
   void userHeartbeat(1: i64 userId)   // Local user send heartbeat to local worker to keep its temp folder.
 
   // Service for KVStore
-  binary kv_getValue(1: binary key)
+  binary kv_getValue(1: i32 storeId, 2: i32 partitionId, 3: binary key)
+    throws (1: TachyonException e)
 }
