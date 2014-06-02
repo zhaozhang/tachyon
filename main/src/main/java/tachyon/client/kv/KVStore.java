@@ -2,6 +2,8 @@ package tachyon.client.kv;
 
 import java.nio.ByteBuffer;
 
+import tachyon.client.TachyonFS;
+
 /**
  * The store is identified by its path, e.g., /data/dailyreport/2014-12-05
  * 
@@ -12,13 +14,15 @@ import java.nio.ByteBuffer;
  */
 public class KVStore {
   private final String KV_STORE_PATH;
+  private TachyonFS TFS;
 
   public static KVStore get(String kvStorePath) {
-    return null;
+    return new KVStore(kvStorePath);
   }
 
   KVStore(String kvStorePath) {
     KV_STORE_PATH = kvStorePath;
+    TFS = TachyonFS.get(KV_STORE_PATH);
   }
 
   public KVPartition createPartition(int index) {
@@ -27,5 +31,9 @@ public class KVStore {
 
   public ByteBuffer get(ByteBuffer key) {
     return null;
+  }
+
+  public String getStorePath() {
+    return KV_STORE_PATH;
   }
 }
