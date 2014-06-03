@@ -45,7 +45,7 @@ public class KVStoreInfo {
         if (mPartitions.get(j) == null) {
           continue;
         }
-        int result = mPartitions.get(i).END_KEY.compareTo(mPartitions.get(j).START_KEY);
+        int result = CommonUtils.compare(mPartitions.get(i).END_KEY, mPartitions.get(j).START_KEY);
         if (result > 0) {
           throw new IOException("Wrong partition order: " + mPartitions.get(i) + " > "
               + mPartitions.get(j));
@@ -63,9 +63,10 @@ public class KVStoreInfo {
         LOG.warn("KVStore " + INODE_ID + " has null partition when being queried.");
         continue;
       }
-      LOG.info("GetPartition: " + partition + " " + buf);
-      LOG.info("GetPartition 2 : " + partition.START_KEY.array() + " " + buf.array() + " "
-          + partition.END_KEY.array());
+      LOG.info("GetPartition: " + partition + " " + buf + " "
+          + CommonUtils.byteArrayToString(partition.START_KEY.array()) + " "
+          + CommonUtils.byteArrayToString(buf.array()) + " "
+          + CommonUtils.byteArrayToString(partition.END_KEY.array()));
       if (CommonUtils.compare(partition.START_KEY, buf) <= 0
           && CommonUtils.compare(partition.END_KEY, buf) >= 0) {
         return partition;

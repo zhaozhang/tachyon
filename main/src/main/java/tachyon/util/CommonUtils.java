@@ -68,6 +68,16 @@ public final class CommonUtils {
     return result;
   }
 
+  public static String byteArrayToString(byte[] bytes) {
+    StringBuilder sb = new StringBuilder("(");
+    for (int k = 0; k < bytes.length; k ++) {
+      sb.append(bytes[k]).append(",");
+    }
+    sb.append(")");
+
+    return sb.toString();
+  }
+
   /**
    * Change local file's permission.
    * 

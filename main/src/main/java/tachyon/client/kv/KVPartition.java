@@ -132,8 +132,8 @@ public class KVPartition {
       mStartKey.put(key);
       mStartKey.flip();
     }
-    mEndKey = ByteBuffer.allocate(value.length);
-    mEndKey.put(value);
+    mEndKey = ByteBuffer.allocate(key.length);
+    mEndKey.put(key);
     mEndKey.flip();
     // mEndKey = ByteBuffer.wrap(value);
 
@@ -143,6 +143,8 @@ public class KVPartition {
     mDataFileOutStream.write(ByteBuffer.allocate(4).putInt(value.length).array());
     mDataFileOutStream.write(value);
     mDataFileLocation += 4 + key.length + 4 + value.length;
+    LOG.info("PUT " + CommonUtils.byteArrayToString(key) + " "
+        + CommonUtils.byteArrayToString(value));
   }
 
   // public void put(ByteBuffer key, ByteBuffer value) {

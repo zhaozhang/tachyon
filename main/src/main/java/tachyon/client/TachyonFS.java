@@ -995,7 +995,9 @@ public class TachyonFS {
     LOG.info("Connecting " + (mIsWorkerLocal ? "local" : "remote") + " worker @ " + workerAddress);
     // TODO improve this.
     WorkerClient tWorkerClient = new WorkerClient(workerAddress, 1000);
+    tWorkerClient.open();
     ByteBuffer result = tWorkerClient.kv_getValue(partition, key);
+    tWorkerClient.close();
     return CommonUtils.cloneByteBuffer(result);
   }
 

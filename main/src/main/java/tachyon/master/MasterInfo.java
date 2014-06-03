@@ -1786,6 +1786,9 @@ public class MasterInfo implements ImageWriter {
   public ClientStorePartitionInfo kv_getPartition(int storeId, ByteBuffer key)
       throws TachyonException, FileDoesNotExistException {
     KVPartitionInfo info = mKVStoresInfo.get(storeId, CommonUtils.cloneByteBuffer(key));
+    if (info == null) {
+      return null;
+    }
     ClientStorePartitionInfo res = info.generateClientStorePartitionInfo();
     if (!info.hasLocation()) {
       int indexFileId = info.INDEX_FILE_ID;
