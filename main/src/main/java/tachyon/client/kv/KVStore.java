@@ -75,7 +75,8 @@ public class KVStore {
       if (partition == null) {
         continue;
       }
-      if (partition.startKey.compareTo(key) <= 0 && partition.endKey.compareTo(key) >= 0) {
+      if (CommonUtils.compare(partition.startKey, key) <= 0
+          && CommonUtils.compare(partition.endKey, key) >= 0) {
         return partition;
       }
     }
