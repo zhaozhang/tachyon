@@ -1795,6 +1795,7 @@ public class MasterInfo implements ImageWriter {
       } catch (IOException e) {
         throw new TachyonException(e.getMessage());
       }
+      LOG.info("kv_getPartition empty location blockinfo: " + blockInfo.get(0));
       res.setLocation(blockInfo.get(0).locations.get(0));
       LOG.info("kv_getPartition empty location: " + res);
     } else {

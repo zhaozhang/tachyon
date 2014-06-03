@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import tachyon.Constants;
+import tachyon.util.CommonUtils;
 
 /**
  * Metadata of a key/value store in the master.
@@ -26,7 +27,7 @@ public class KVStoreInfo {
   void addPartition(KVPartitionInfo partition) throws IOException {
     // TODO this method is very inefficient currently.
 
-    while (mPartitions.size() < partition.PARTITION_INDEX) {
+    while (mPartitions.size() <= partition.PARTITION_INDEX) {
       mPartitions.add(null);
     }
 
@@ -62,7 +63,11 @@ public class KVStoreInfo {
         LOG.warn("KVStore " + INODE_ID + " has null partition when being queried.");
         continue;
       }
-      if (partition.START_KEY.compareTo(buf) <= 0 && partition.END_KEY.compareTo(buf) >= 0) {
+      LOG.info("GetPartition: " + partition + " " + buf);
+      LOG.info("GetPartition 2 : " + partition.START_KEY.array() + " " + buf.array() + " "
+          + partition.END_KEY.array());
+      if (CommonUtils.compare(partition.START_KEY, buf) <= 0
+          && CommonUtils.compare(partition.END_KEY, buf) >= 0) {
         return partition;
       }
     }

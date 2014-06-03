@@ -987,7 +987,8 @@ public class TachyonFS {
     }
   }
 
-  public synchronized ByteBuffer kv_getValue(ClientStorePartitionInfo partition, ByteBuffer key) {
+  public synchronized ByteBuffer kv_getValue(ClientStorePartitionInfo partition, ByteBuffer key)
+      throws TachyonException, TException {
     InetSocketAddress workerAddress =
         new InetSocketAddress(partition.location.mHost, partition.location.mPort);
 

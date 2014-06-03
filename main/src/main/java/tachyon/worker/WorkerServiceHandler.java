@@ -82,7 +82,11 @@ public class WorkerServiceHandler implements WorkerService.Iface {
   @Override
   public ByteBuffer kv_getValue(ClientStorePartitionInfo info, ByteBuffer key)
       throws TachyonException, TException {
-    return mWorkerStorage.kv_getValue(info, CommonUtils.cloneByteBuffer(key));
+    try {
+      return mWorkerStorage.kv_getValue(info, CommonUtils.cloneByteBuffer(key));
+    } catch (IOException e) {
+      throw new TachyonException(e.getMessage());
+    }
   }
 
   @Override

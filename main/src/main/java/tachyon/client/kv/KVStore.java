@@ -5,8 +5,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.thrift.TException;
+
 import tachyon.client.TachyonFS;
 import tachyon.thrift.ClientStorePartitionInfo;
+import tachyon.thrift.TachyonException;
 import tachyon.util.CommonUtils;
 
 /**
@@ -49,7 +52,7 @@ public class KVStore {
     return KVPartition.createKVPartition(TFS, STORE_ID, KV_STORE_PATH_NOSCHEMA, index);
   }
 
-  public ByteBuffer get(byte[] key) throws IOException {
+  public ByteBuffer get(byte[] key) throws IOException, TachyonException, TException {
     ByteBuffer tKey = ByteBuffer.wrap(key);
     ClientStorePartitionInfo partition = getKVPartition(tKey);
     if (partition == null) {
@@ -57,7 +60,7 @@ public class KVStore {
       if (partition == null) {
         return null;
       }
-      for (int k = mPartitions.size(); k < partition.partitionIndex; k ++) {
+      for (int k = mPartitions.size(); k <= partition.partitionIndex; k ++) {
         mPartitions.add(null);
       }
       mPartitions.set(partition.partitionIndex, partition);

@@ -109,7 +109,12 @@ public class KVPartition {
       }
       info.setStartKey(mStartKey.array());
       info.setEndKey(mEndKey.array());
-      TFS.kv_addPartition(info);
+      try {
+        TFS.kv_addPartition(info);
+      } catch (Exception e) {
+        LOG.error(e);
+      }
+      LOG.info("closing: " + info);
     }
   }
 
@@ -127,9 +132,9 @@ public class KVPartition {
       mStartKey.put(key);
       mStartKey.flip();
     }
-    mStartKey = ByteBuffer.allocate(value.length);
-    mStartKey.put(value);
-    mStartKey.flip();
+    mEndKey = ByteBuffer.allocate(value.length);
+    mEndKey.put(value);
+    mEndKey.flip();
     // mEndKey = ByteBuffer.wrap(value);
 
     mIndexFileOutStream.write(ByteBuffer.allocate(4).putInt(mDataFileLocation).array());
