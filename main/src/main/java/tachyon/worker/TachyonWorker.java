@@ -16,14 +16,13 @@ package tachyon.worker;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 
+import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.transport.TNonblockingServerSocket;
 import org.apache.thrift.transport.TTransportException;
-import org.apache.log4j.Logger;
 
 import tachyon.Constants;
 import tachyon.Version;
@@ -41,14 +40,15 @@ public class TachyonWorker implements Runnable {
 
   public static synchronized TachyonWorker createWorker(InetSocketAddress masterAddress,
       InetSocketAddress workerAddress, int dataPort, int selectorThreads,
-      int acceptQueueSizePerThreads, int workerThreads, String localFolder, long spaceLimitBytes) {
+      int acceptQueueSizePerThreads, int workerThreads, String localFolder, long spaceLimitBytes)
+      throws IOException {
     return new TachyonWorker(masterAddress, workerAddress, dataPort, selectorThreads,
         acceptQueueSizePerThreads, workerThreads, localFolder, spaceLimitBytes);
   }
 
   public static synchronized TachyonWorker createWorker(String masterAddress,
       String workerAddress, int dataPort, int selectorThreads, int acceptQueueSizePerThreads,
-      int workerThreads, String localFolder, long spaceLimitBytes) {
+      int workerThreads, String localFolder, long spaceLimitBytes) throws IOException {
     String[] address = masterAddress.split(":");
     InetSocketAddress master = new InetSocketAddress(address[0], Integer.parseInt(address[1]));
     address = workerAddress.split(":");
@@ -76,7 +76,7 @@ public class TachyonWorker implements Runnable {
     return masterLocation;
   }
 
-  public static void main(String[] args) throws UnknownHostException {
+  public static void main(String[] args) throws IOException {
     if (args.length < 1 || args.length > 2) {
       LOG.info("Usage: java -cp target/tachyon-" + Version.VERSION + "-jar-with-dependencies.jar "
           + "tachyon.Worker <WorkerHost> [<MasterHost:Port>]");
@@ -116,7 +116,7 @@ public class TachyonWorker implements Runnable {
 
   private TachyonWorker(InetSocketAddress masterAddress, InetSocketAddress workerAddress,
       int dataPort, int selectorThreads, int acceptQueueSizePerThreads, int workerThreads,
-      String dataFolder, long memoryCapacityBytes) {
+      String dataFolder, long memoryCapacityBytes) throws IOException {
     MasterAddress = masterAddress;
     WorkerAddress = workerAddress;
 

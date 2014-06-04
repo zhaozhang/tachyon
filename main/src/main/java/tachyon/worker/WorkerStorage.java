@@ -40,9 +40,6 @@ import org.apache.thrift.TException;
 import tachyon.Constants;
 import tachyon.UnderFileSystem;
 import tachyon.Users;
-import tachyon.client.TachyonByteBuffer;
-import tachyon.client.TachyonFS;
-import tachyon.client.TachyonFile;
 import tachyon.conf.CommonConf;
 import tachyon.conf.WorkerConf;
 import tachyon.master.BlockInfo;
@@ -286,8 +283,10 @@ public class WorkerStorage {
   private ArrayList<Thread> mCheckpointThreads = new ArrayList<Thread>(
       WorkerConf.get().WORKER_CHECKPOINT_THREADS);
 
+  private KVWorkerStorage mKVStorage;
+
   public WorkerStorage(InetSocketAddress masterAddress, InetSocketAddress workerAddress,
-      String dataFolder, long memoryCapacityBytes) {
+      String dataFolder, long memoryCapacityBytes) throws IOException {
     COMMON_CONF = CommonConf.get();
 
     mMasterAddress = masterAddress;
@@ -341,6 +340,10 @@ public class WorkerStorage {
     } catch (TException e) {
       CommonUtils.runtimeException(e);
     }
+
+    mKVStorage =
+        new KVWorkerStorage("tachyon://" + mMasterAddress.getHostName() + ":"
+            + mMasterAddress.getPort());
 
     LOG.info("Current Worker Info: ID " + mWorkerId + ", ADDRESS: " + mWorkerAddress
         + ", MemoryCapacityBytes: " + mWorkerSpaceCounter.getCapacityBytes());
@@ -579,39 +582,7 @@ public class WorkerStorage {
   }
 
   public ByteBuffer kv_getValue(ClientStorePartitionInfo info, ByteBuffer key) throws IOException {
-    TachyonFS tfs =
-        TachyonFS
-            .get("tachyon://" + mMasterAddress.getHostName() + ":" + mMasterAddress.getPort());
-
-    TachyonFile dataFile = tfs.getFile(info.getDataFileId());
-    TachyonFile indexFile = tfs.getFile(info.getIndexFileId());
-
-    TachyonByteBuffer dataBuffer = dataFile.readByteBuffer();
-    TachyonByteBuffer indexBuffer = indexFile.readByteBuffer();
-
-    ByteBuffer result = null;
-
-    ByteBuffer data = dataBuffer.DATA;
-    // HashMap<byte[], byte[]> kv = new HashMap<byte[], byte[]>();
-    while (data.hasRemaining()) {
-      int size = data.getInt();
-      byte[] tKey = new byte[size];
-      data.get(tKey);
-      size = data.getInt();
-      byte[] tValue = new byte[size];
-      data.get(tValue);
-      if (tempEqual(tKey, key.array())) {
-        result = ByteBuffer.allocate(tValue.length);
-        result.put(tValue);
-        result.flip();
-        break;
-      }
-    }
-
-    dataBuffer.close();
-    indexBuffer.close();
-
-    return result;
+    return mKVStorage.getValue(info, key);
   }
 
   public void lockBlock(long blockId, long userId) throws TException {
@@ -757,18 +728,6 @@ public class WorkerStorage {
     os.close();
 
     localFile.close();
-  }
-
-  private boolean tempEqual(byte[] a, byte[] b) {
-    if (a.length != b.length) {
-      return false;
-    }
-    for (int k = 0; k < a.length; k ++) {
-      if (a[k] != b[k]) {
-        return false;
-      }
-    }
-    return true;
   }
 
   public void unlockBlock(long blockId, long userId) throws TException {
