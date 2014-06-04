@@ -52,6 +52,11 @@ public class KVWorkerStorage {
     }
     dataBuffer.DATA.clear();
 
+    if (null == result) {
+      // This should return "null". But Thrift does not handle "null" well.
+      return ByteBuffer.allocate(0);
+    }
+
     return result;
   }
 

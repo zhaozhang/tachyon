@@ -270,7 +270,11 @@ public class TFsShell {
     String key = argv[2];
     KVStore store = KVStore.get(storePath);
     ByteBuffer result = store.get(key.getBytes());
-    System.out.println("The result is " + result.getInt());
+    if (result.limit() == 0) {
+      System.out.println("Key " + key + " does not exist in the store.");
+    } else {
+      System.out.println("The result is " + result.getInt());
+    }
     return 0;
   }
 
