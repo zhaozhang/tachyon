@@ -997,12 +997,12 @@ public class TachyonFS {
 
     WorkerClient tWorkerClient = mKVWorkerClients.get(workerAddress);
     if (tWorkerClient == null) {
-      LOG.info("Connecting to the worker: " + workerAddress);
+      LOG.debug("Connecting to the worker: " + workerAddress);
       tWorkerClient = new WorkerClient(workerAddress, 1000);
       tWorkerClient.open();
       mKVWorkerClients.put(workerAddress, tWorkerClient);
     } else {
-      LOG.info("Using cached worker: " + workerAddress);
+      LOG.debug("Using cached worker: " + workerAddress);
     }
     ByteBuffer result = tWorkerClient.kv_getValue(partition, key);
     return CommonUtils.cloneByteBuffer(result);
