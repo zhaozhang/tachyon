@@ -135,6 +135,9 @@ public class TachyonFS {
 
   private boolean mConnected = false;
 
+  private Map<InetSocketAddress, WorkerClient> mKVWorkerClients =
+      new HashMap<InetSocketAddress, WorkerClient>();
+
   private TachyonFS(InetSocketAddress masterAddress, boolean zookeeperMode) {
     mMasterAddress = masterAddress;
     mZookeeperMode = zookeeperMode;
@@ -992,12 +995,16 @@ public class TachyonFS {
     InetSocketAddress workerAddress =
         new InetSocketAddress(partition.location.mHost, partition.location.mPort);
 
-    LOG.info("Connecting " + (mIsWorkerLocal ? "local" : "remote") + " worker @ " + workerAddress);
-    // TODO improve this.
-    WorkerClient tWorkerClient = new WorkerClient(workerAddress, 1000);
-    tWorkerClient.open();
+    WorkerClient tWorkerClient = mKVWorkerClients.get(workerAddress);
+    if (tWorkerClient == null) {
+      LOG.info("Connecting to the worker: " + workerAddress);
+      tWorkerClient = new WorkerClient(workerAddress, 1000);
+      tWorkerClient.open();
+      mKVWorkerClients.put(workerAddress, tWorkerClient);
+    } else {
+      LOG.info("Using cached worker: " + workerAddress);
+    }
     ByteBuffer result = tWorkerClient.kv_getValue(partition, key);
-    tWorkerClient.close();
     return CommonUtils.cloneByteBuffer(result);
   }
 

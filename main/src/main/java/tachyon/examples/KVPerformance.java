@@ -36,20 +36,25 @@ public class KVPerformance {
     KEYS.add("Spark");
     KEYS.add("spark");
 
+    int tests = 10000;
     int total = 0;
+    long startTimeMs = System.currentTimeMillis();
     for (int k = 0; k < 1000; k ++) {
-      String key = KEYS.get(k);
+      String key = KEYS.get(k % 5);
       ByteBuffer result = KVS.get(key.getBytes());
       if (result.limit() == 0) {
-        System.out.println("Key " + key + " does not exist in the store.");
+        LOG.info("Key " + key + " does not exist in the store.");
       } else {
         int res = result.getInt();
         total += res;
-        System.out.println("(" + key + "," + res + ")");
+        LOG.info("(" + key + "," + res + ")");
       }
     }
+    long endTimeMs = System.currentTimeMillis();
 
-    System.out.println();
+    LOG.info("Total value is " + total);
+    LOG.info("Total time MS: " + (endTimeMs - startTimeMs));
+    LOG.info("Average time: " + (endTimeMs - startTimeMs) * 1.0 / tests);
     System.exit(0);
   }
 }
