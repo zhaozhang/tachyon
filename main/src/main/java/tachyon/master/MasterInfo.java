@@ -861,7 +861,7 @@ public class MasterInfo implements ImageWriter {
 
       InetSocketAddress address = tWorkerInfo.ADDRESS;
       tFile.addLocation(blockIndex, workerId,
-          new NetAddress(address.getHostName(), address.getPort()));
+          new NetAddress(address.getAddress().getCanonicalHostName(), address.getPort()));
 
       if (tFile.hasCheckpointed()) {
         return -1;
