@@ -53,6 +53,7 @@ import tachyon.thrift.NetAddress;
 import tachyon.thrift.NoWorkerException;
 import tachyon.thrift.TachyonException;
 import tachyon.util.CommonUtils;
+import tachyon.util.NetworkUtils;
 import tachyon.worker.WorkerClient;
 
 /**
@@ -267,7 +268,13 @@ public class TachyonFS {
     NetAddress workerNetAddress = null;
     mIsWorkerLocal = false;
     try {
-      String localHostName = InetAddress.getLocalHost().getCanonicalHostName();
+      String localHostName;
+      try {
+        localHostName =
+            NetworkUtils.resolveHostName(InetAddress.getLocalHost().getCanonicalHostName());
+      } catch (UnknownHostException e) {
+        localHostName = InetAddress.getLocalHost().getCanonicalHostName();
+      }
       LOG.info("Trying to get local worker host : " + localHostName);
       workerNetAddress = mMasterClient.user_getWorker(false, localHostName);
       mIsWorkerLocal = true;
