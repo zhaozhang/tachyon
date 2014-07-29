@@ -36,8 +36,8 @@ public class TachyonURI implements Comparable<TachyonURI> {
    * additional normalization.
    */
   public TachyonURI(String pathStr) {
-    if (pathStr == null || pathStr.length() == 0) {
-      throw new IllegalArgumentException("Can not create a Path from a null or empty string");
+    if (pathStr == null) {
+      throw new IllegalArgumentException("Can not create a Path from a null");
     }
 
     // add a slash in front of paths with Windows drive letters
@@ -157,6 +157,9 @@ public class TachyonURI implements Comparable<TachyonURI> {
    */
   public int getDepth() {
     String path = mUri.getPath();
+    if (path.isEmpty()) {
+      return 0;
+    }
     int depth = 0;
     int slash = path.length() == 1 && path.charAt(0) == '/' ? -1 : 0;
     while (slash != -1) {

@@ -46,6 +46,25 @@ public class TachyonURITest {
   }
 
   @Test
+  public void emptyURITest() {
+    TachyonURI uri = new TachyonURI("");
+    Assert.assertEquals(null, uri.getAuthority());
+    Assert.assertEquals(0, uri.getDepth());
+    Assert.assertEquals(null, uri.getHost());
+    Assert.assertEquals("", uri.getName());
+    Assert.assertEquals("", uri.getPath());
+    Assert.assertEquals(-1, uri.getPort());
+    Assert.assertEquals(null, uri.getScheme());
+    Assert.assertEquals(false, uri.hasAuthority());
+    Assert.assertEquals(false, uri.hasScheme());
+    Assert.assertEquals(false, uri.isAbsolute());
+    Assert.assertEquals(false, uri.isPathAbsolute());
+    Assert.assertEquals("/d", uri.join("/d").toString());
+    Assert.assertEquals("/d", uri.join(new TachyonURI("/d")).toString());
+    Assert.assertEquals("", uri.toString());
+  }
+
+  @Test
   public void constructFromComponentsTests() {
     String scheme = "tachyon";
     String authority = "127.0.0.1:90909";
@@ -331,12 +350,6 @@ public class TachyonURITest {
 
     Assert.assertEquals("foo://bar boo:8080/abc/c",
         new TachyonURI("foo://bar boo:8080/abc///c").toString());
-  }
-
-  // Exceptions
-  @Test(expected = IllegalArgumentException.class)
-  public void constructFromEmptyPathTest() {
-    new TachyonURI("");
   }
 
   @Test(expected = IllegalArgumentException.class)
