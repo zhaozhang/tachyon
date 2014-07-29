@@ -54,10 +54,9 @@ public class RawColumn {
 
   // TODO creating file here should be based on id.
   public TachyonFile getPartition(int pId, boolean cachedMetadata) throws IOException {
-    return TFS
-        .getFile(
-            new TachyonURI(CommonUtils.concat(RAW_TABLE.getPath(), MasterInfo.COL + COLUMN_INDEX,
-                pId)), cachedMetadata);
+    TachyonURI partition =
+        new TachyonURI(CommonUtils.concat(RAW_TABLE.getPath(), MasterInfo.COL + COLUMN_INDEX, pId));
+    return TFS.getFile(partition, cachedMetadata);
   }
 
   // TODO creating file here should be based on id.

@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Throwables;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.UnderFileSystem;
 import tachyon.UnderFileSystemCluster;
 import tachyon.client.TachyonFS;
@@ -127,7 +128,8 @@ public class LocalTachyonClusterMultiMaster {
   }
 
   public synchronized TachyonFS getClient() throws IOException {
-    mClients.add(TachyonFS.get(Constants.HEADER_FT + mCuratorServer.getConnectString()));
+    mClients.add(TachyonFS.get(new TachyonURI(Constants.HEADER_FT
+        + mCuratorServer.getConnectString())));
     return mClients.get(mClients.size() - 1);
   }
 

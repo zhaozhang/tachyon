@@ -866,7 +866,7 @@ public class TachyonFS {
     }
     ClientFileInfo ret;
     if (useCachedMetadata && mCachedClientFileInfos.containsKey(path.getPath())) {
-      return mCachedClientFileInfos.get(path);
+      return mCachedClientFileInfos.get(path.getPath());
     }
     try {
       ret = mMasterClient.user_getClientFileInfoByPath(path.getPath());

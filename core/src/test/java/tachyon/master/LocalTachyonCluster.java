@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.UnderFileSystem;
 import tachyon.UnderFileSystemCluster;
 import tachyon.client.TachyonFS;
@@ -82,7 +83,8 @@ public class LocalTachyonCluster {
   }
 
   public synchronized TachyonFS getClient() throws IOException {
-    mClients.add(TachyonFS.get(Constants.HEADER + mLocalhostName + ":" + mMasterPort));
+    mClients.add(TachyonFS.get(new TachyonURI(Constants.HEADER + mLocalhostName + ":"
+        + mMasterPort)));
     return mClients.get(mClients.size() - 1);
   }
 
