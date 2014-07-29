@@ -20,12 +20,13 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert;
 
 import tachyon.Constants;
 import tachyon.PrefixList;
+import tachyon.TachyonURI;
 import tachyon.UnderFileSystem;
 import tachyon.UnderFileSystemCluster;
 import tachyon.client.TachyonFS;
@@ -87,7 +88,7 @@ public class UnderfsUtilsTest {
     List<String> paths = null;
     for (String exclusion : exclusions) {
       try {
-        paths = mTfs.ls(exclusion, true);
+        paths = mTfs.ls(new TachyonURI(exclusion), true);
         fail("NO FileDoesNotExistException is expected here");
       } catch (IOException ioe) {
         Assert.assertNotNull(ioe);
@@ -96,7 +97,7 @@ public class UnderfsUtilsTest {
     }
 
     for (String inclusion : inclusions) {
-      paths = mTfs.ls(inclusion, true);
+      paths = mTfs.ls(new TachyonURI(inclusion), true);
       Assert.assertNotNull(paths);
     }
   }

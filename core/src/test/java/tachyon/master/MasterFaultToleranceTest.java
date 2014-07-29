@@ -70,9 +70,10 @@ public class MasterFaultToleranceTest {
   private void faultTestDataCreation(String folderName, List<Pair<Integer, String>> answer)
       throws IOException {
     TachyonFS tfs = mLocalTachyonClusterMultiMaster.getClient();
-    if (!tfs.exist(new TachyonURI(folderName))) {
-      tfs.mkdir(folderName);
-      answer.add(new Pair<Integer, String>(tfs.getFileId(new TachyonURI(folderName)), folderName));
+    TachyonURI folder = new TachyonURI(folderName);
+    if (!tfs.exist(folder)) {
+      tfs.mkdir(folder);
+      answer.add(new Pair<Integer, String>(tfs.getFileId(folder), folderName));
     }
 
     for (int k = 0; k < 10; k ++) {
@@ -90,7 +91,7 @@ public class MasterFaultToleranceTest {
    */
   private void faultTestDataCheck(List<Pair<Integer, String>> answer) throws IOException {
     TachyonFS tfs = mLocalTachyonClusterMultiMaster.getClient();
-    List<String> files = tfs.ls(Constants.PATH_SEPARATOR, true);
+    List<String> files = tfs.ls(new TachyonURI(Constants.PATH_SEPARATOR), true);
     Assert.assertEquals(answer.size(), files.size());
     for (int k = 0; k < answer.size(); k ++) {
       Assert.assertEquals(answer.get(k).getSecond(), tfs.getFile(answer.get(k).getFirst())
@@ -135,7 +136,7 @@ public class MasterFaultToleranceTest {
       TachyonFS tfs = mLocalTachyonClusterMultiMaster.getClient();
       tfs.createFile(new TachyonURI(Constants.PATH_SEPARATOR + k), 1024);
     }
-    List<String> files = mTfs.ls(Constants.PATH_SEPARATOR, true);
+    List<String> files = mTfs.ls(new TachyonURI(Constants.PATH_SEPARATOR), true);
     Assert.assertEquals(clients + 1, files.size());
     Assert.assertEquals(Constants.PATH_SEPARATOR, files.get(0));
     for (int k = 0; k < clients; k ++) {

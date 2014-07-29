@@ -115,7 +115,7 @@ public class UnderfsUtils {
     String ufsRootPath = ufsPair.getSecond();
 
     if (!tfs.exist(new TachyonURI(tfsRootPath))) {
-      tfs.mkdir(tfsRootPath);
+      tfs.mkdir(new TachyonURI(tfsRootPath));
       // TODO Add the following.
       // if (tfs.mkdir(tfsRootPath)) {
       // LOG.info("directory " + tfsRootPath + " does not exist in Tachyon: created");
@@ -169,7 +169,7 @@ public class UnderfsUtils {
         String tfsPath =
             CommonUtils.concat(tfsRootPath, ufsPath.substring(ufsAddrRootPath.length()));
         if (!tfs.exist(new TachyonURI(tfsPath))) {
-          tfs.mkdir(tfsPath);
+          tfs.mkdir(new TachyonURI(tfsPath));
           // TODO Add the following.
           // if (tfs.mkdir(tfsPath)) {
           // LOG.info("Created TFS folder " + tfsPath + " with checkpoint location " + ufsPath);

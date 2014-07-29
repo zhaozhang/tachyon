@@ -26,12 +26,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.UnderFileSystem;
 import tachyon.conf.UserConf;
 import tachyon.thrift.ClientBlockInfo;
 import tachyon.thrift.NetAddress;
-import tachyon.worker.DataServerMessage;
 import tachyon.util.CommonUtils;
+import tachyon.worker.DataServerMessage;
 
 /**
  * Tachyon File.
@@ -468,7 +469,7 @@ public class TachyonFile implements Comparable<TachyonFile> {
    * @return true if succeed, false otherwise
    * @throws IOException
    */
-  public boolean rename(String path) throws IOException {
+  public boolean rename(TachyonURI path) throws IOException {
     return TFS.rename(FID, path);
   }
 

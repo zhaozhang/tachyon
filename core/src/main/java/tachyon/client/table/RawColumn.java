@@ -62,7 +62,7 @@ public class RawColumn {
 
   // TODO creating file here should be based on id.
   public int partitions() throws IOException {
-    return TFS.getNumberOfFiles(CommonUtils.concat(RAW_TABLE.getPath(), MasterInfo.COL
-        + COLUMN_INDEX));
+    return TFS.getNumberOfFiles(new TachyonURI(CommonUtils.concat(RAW_TABLE.getPath(),
+        MasterInfo.COL + COLUMN_INDEX)));
   }
 }

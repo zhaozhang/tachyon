@@ -141,7 +141,7 @@ public class TFsShell {
       in.close();
       return 0;
     } else {
-      tachyonClient.mkdir(dstPath);
+      tachyonClient.mkdir(new TachyonURI(dstPath));
       for (String file : src.list()) {
         String newPath = FilenameUtils.concat(dstPath, file);
         File srcFile = new File(src, file);
@@ -215,8 +215,8 @@ public class TFsShell {
 
   private long[] countHelper(String path) throws IOException {
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    String folder = Utils.getFilePath(path);
-    TachyonFile tFile = tachyonClient.getFile(new TachyonURI(folder));
+    TachyonURI folder = new TachyonURI(Utils.getFilePath(path));
+    TachyonFile tFile = tachyonClient.getFile(folder);
 
     if (tFile.isFile()) {
       return new long[] { 1L, 0L, tFile.length() };
@@ -299,7 +299,7 @@ public class TFsShell {
       return -1;
     }
     String path = argv[1];
-    String folder = Utils.getFilePath(path);
+    TachyonURI folder = new TachyonURI(Utils.getFilePath(path));
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
     List<ClientFileInfo> files = tachyonClient.listStatus(folder);
     Collections.sort(files);
@@ -334,7 +334,7 @@ public class TFsShell {
       return -1;
     }
     String path = argv[1];
-    String folder = Utils.getFilePath(path);
+    TachyonURI folder = new TachyonURI(Utils.getFilePath(path));
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
     List<ClientFileInfo> files = tachyonClient.listStatus(folder);
     Collections.sort(files);
@@ -374,7 +374,7 @@ public class TFsShell {
     String path = argv[1];
     String folder = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    if (tachyonClient.mkdir(folder)) {
+    if (tachyonClient.mkdir(new TachyonURI(folder))) {
       System.out.println("Successfully created directory " + folder);
       return 0;
     } else {

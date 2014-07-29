@@ -384,8 +384,9 @@ public class TachyonFSTest {
   @Test
   public void mkdirTest() throws IOException {
     for (int k = 0; k < 10; k ++) {
-      Assert.assertEquals(true, mTfs.mkdir("/root/folder" + k));
-      Assert.assertEquals(true, mTfs.mkdir("/root/folder" + k));
+      TachyonURI folder = new TachyonURI("/root/folder" + k);
+      Assert.assertEquals(true, mTfs.mkdir(folder));
+      Assert.assertEquals(true, mTfs.mkdir(folder));
     }
   }
 
@@ -412,7 +413,7 @@ public class TachyonFSTest {
     TachyonFile file = mTfs.getFile(new TachyonURI("/root/testFile0"));
     for (int k = 1; k < 10; k ++) {
       Assert.assertTrue(mTfs.exist(new TachyonURI("/root/testFile" + (k - 1))));
-      Assert.assertTrue(file.rename("/root/testFile" + k));
+      Assert.assertTrue(file.rename(new TachyonURI("/root/testFile" + k)));
       Assert.assertEquals(fileId, mTfs.getFileId(new TachyonURI("/root/testFile" + k)));
       Assert.assertFalse(mTfs.exist(new TachyonURI("/root/testFile" + (k - 1))));
     }

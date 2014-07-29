@@ -303,7 +303,7 @@ abstract class AbstractTFS extends FileSystem {
       throw new FileNotFoundException("File does not exist: " + path);
     }
 
-    List<ClientFileInfo> files = mTFS.listStatus(tPath);
+    List<ClientFileInfo> files = mTFS.listStatus(new TachyonURI(tPath));
     FileStatus[] ret = new FileStatus[files.size()];
     for (int k = 0; k < files.size(); k ++) {
       ClientFileInfo info = files.get(k);
@@ -319,7 +319,7 @@ abstract class AbstractTFS extends FileSystem {
   @Override
   public boolean mkdirs(Path cPath, FsPermission permission) throws IOException {
     LOG.info("mkdirs(" + cPath + ", " + permission + ")");
-    return mTFS.mkdir(Utils.getPathWithoutScheme(cPath));
+    return mTFS.mkdir(new TachyonURI(Utils.getPathWithoutScheme(cPath)));
   }
 
   @Override

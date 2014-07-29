@@ -42,7 +42,7 @@ public class PinTest {
     int dir0Id = mTfs.getFileId(uri);
 
     uri = new TachyonURI("/myFolder");
-    mTfs.mkdir("/myFolder");
+    mTfs.mkdir(uri);
     int dir1Id = mTfs.getFileId(uri);
 
     uri = new TachyonURI("/myFolder/myFile");
@@ -87,7 +87,7 @@ public class PinTest {
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(file0Id));
 
     // Child folder should be pinned
-    mTfs.mkdir("/folder");
+    mTfs.mkdir(new TachyonURI("/folder"));
     int folderId = mTfs.getFileId(new TachyonURI("/folder"));
     assertTrue(mMasterInfo.getClientFileInfo(folderId).isPinned);
 
