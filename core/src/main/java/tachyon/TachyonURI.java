@@ -60,7 +60,8 @@ public class TachyonURI implements Comparable<TachyonURI> {
     }
 
     // parse uri authority, if any
-    if (pathStr.startsWith("//", start) && (pathStr.length() - start > 2)) {       // has authority
+    if (pathStr.startsWith("//", start) && (pathStr.length() - start > 2)
+        && pathStr.substring(start).indexOf(":") != -1) {       // has authority
       int nextSlash = pathStr.indexOf('/', start + 2);
       int authEnd = nextSlash > 0 ? nextSlash : pathStr.length();
       authority = pathStr.substring(start + 2, authEnd);
@@ -146,11 +147,11 @@ public class TachyonURI implements Comparable<TachyonURI> {
    * /a/b/                              -> 3
    * a/b                                -> 2
    * a\b                                -> 2
-   * C:\a                               -> 1
-   * C:                                 -> 0
    * tachyon://localhost:1998/          -> 0
    * tachyon://localhost:1998/a         -> 1
    * tachyon://localhost:1998/a/b.txt   -> 2
+   * C:\a                               -> 1
+   * C:                                 -> 0
    * </pre>
    * 
    * @return the depth
@@ -325,6 +326,20 @@ public class TachyonURI implements Comparable<TachyonURI> {
   public boolean isPathAbsolute() {
     int start = hasWindowsDrive(mUri.getPath(), true) ? 3 : 0;
     return mUri.getPath().startsWith(SEPARATOR, start);
+  }
+
+  /**
+   * Tells whether or not this URI is root.
+   * 
+   * <p>
+   * A URI is root if its path equals to "/"
+   * </p>
+   * 
+   * @return <tt>true</tt> if, and only if, this URI is root
+   */
+  public boolean isRoot() {
+    return mUri.getPath().equals(SEPARATOR)
+        || (mUri.getPath().isEmpty() && mUri.getAuthority() != null);
   }
 
   /**
