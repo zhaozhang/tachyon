@@ -34,10 +34,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.UnderFileSystem;
 import tachyon.client.table.RawTable;
 import tachyon.conf.CommonConf;
@@ -57,7 +57,7 @@ import tachyon.thrift.TachyonException;
 import tachyon.util.CommonUtils;
 import tachyon.util.NetworkUtils;
 import tachyon.worker.WorkerClient;
- 
+
 /**
  * Tachyon's user client API. It contains a MasterClient and several WorkerClients
  * depending on how many workers the client program is interacting with.
@@ -71,29 +71,34 @@ public class TachyonFS {
    *          tachyon://localhost:19998/ab/c.txt
    * @return the corresponding TachyonFS handler
    * @throws IOException
+   * @deprecated use {@link #get(TachyonURI)} instead.
    */
+  @Deprecated
   public static synchronized TachyonFS get(final String tachyonPath) throws IOException {
-    boolean zookeeperMode = false;
-    String tempAddress = tachyonPath;
-    if (tachyonPath.startsWith(Constants.HEADER)) {
-      tempAddress = tachyonPath.substring(Constants.HEADER.length());
-    } else if (tachyonPath.startsWith(Constants.HEADER_FT)) {
-      zookeeperMode = true;
-      tempAddress = tachyonPath.substring(Constants.HEADER_FT.length());
-    } else {
-      throw new IOException("Invalid Path: " + tachyonPath + ". Use " + Constants.HEADER
+    return get(new TachyonURI(tachyonPath));
+  }
+
+  /**
+   * 
+   * Create a TachyonFS handler.
+   * 
+   * @param tachyonURI
+   *          a TachyonURI contains master address. e.g., tachyon://localhost:19998,
+   *          tachyon://localhost:19998/ab/c.txt
+   * @return the corresponding TachyonFS handler
+   * @throws IOException
+   */
+  public static synchronized TachyonFS get(final TachyonURI tachyonURI) throws IOException {
+    String scheme = tachyonURI.getScheme();
+
+    if (scheme == null || tachyonURI.getHost() == null || tachyonURI.getPort() == -1
+        || (!scheme.equals(Constants.SCHEME) && !scheme.equals(Constants.SCHEME_FT))) {
+      throw new IOException("Invalid Tachyon URI: " + tachyonURI + ". Use " + Constants.HEADER
           + "host:port/ ," + Constants.HEADER_FT + "host:port/");
     }
-    String masterAddress = tempAddress;
-    if (tempAddress.contains(Constants.PATH_SEPARATOR)) {
-      masterAddress = tempAddress.substring(0, tempAddress.indexOf(Constants.PATH_SEPARATOR));
-    }
-    Preconditions.checkArgument(masterAddress.split(":").length == 2,
-        "Illegal Tachyon Master Address: " + tachyonPath);
 
-    String masterHost = masterAddress.split(":")[0];
-    int masterPort = Integer.parseInt(masterAddress.split(":")[1]);
-    return new TachyonFS(new InetSocketAddress(masterHost, masterPort), zookeeperMode);
+    return new TachyonFS(new InetSocketAddress(tachyonURI.getHost(), tachyonURI.getPort()),
+        scheme.equals(Constants.SCHEME_FT));
   }
 
   /**
