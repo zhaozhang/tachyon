@@ -257,17 +257,28 @@ public class TachyonFS {
   }
 
   /**
-   * Cleans the given path, throwing an IOException rather than an InvalidPathException.
+   * Validate the given path, throwing an IOException if the path is invalid
    * 
    * @param path
    *          The path to clean
-   * @return the cleaned path
    */
-  private synchronized String cleanPathIOException(String path) throws IOException {
+  private synchronized String validatePath(String path) throws IOException {
     try {
       return CommonUtils.cleanPath(path);
     } catch (InvalidPathException e) {
       throw new IOException(e.getMessage());
+    }
+  }
+
+  /**
+   * Validate the given path, throwing an IOException if the path is invalid
+   * 
+   * @param path
+   *          The path to clean
+   */
+  private synchronized void validatePath(TachyonURI path) throws IOException {
+    if (path == null || !path.isPathAbsolute()) {
+      throw new IOException("Path " + path + " is invalid.");
     }
   }
 
@@ -486,7 +497,7 @@ public class TachyonFS {
    * @throws IOException
    *           If file already exists, or path is invalid.
    */
-  public synchronized int createFile(String path) throws IOException {
+  public synchronized int createFile(TachyonURI path) throws IOException {
     return createFile(path, UserConf.get().DEFAULT_BLOCK_SIZE_BYTE);
   }
 
@@ -502,24 +513,22 @@ public class TachyonFS {
    * @throws IOException
    *           If file already exists, or path is invalid.
    */
-  public synchronized int createFile(String path, long blockSizeByte) throws IOException {
+  public synchronized int createFile(TachyonURI path, long blockSizeByte) throws IOException {
     if (blockSizeByte > (long) Constants.GB * 2) {
       throw new IOException("Block size must be less than 2GB: " + blockSizeByte);
     }
 
+    validatePath(path);
     connect();
     if (!mConnected) {
       return -1;
     }
-    String cleanedPath = cleanPathIOException(path);
-    int fid = -1;
     try {
-      fid = mMasterClient.user_createFile(cleanedPath, blockSizeByte);
+      return mMasterClient.user_createFile(path.toString(), blockSizeByte);
     } catch (TException e) {
       mConnected = false;
       throw new IOException(e);
     }
-    return fid;
   }
 
   /**
@@ -539,7 +548,7 @@ public class TachyonFS {
     if (!mConnected) {
       return -1;
     }
-    String cleanedPath = cleanPathIOException(path);
+    String cleanedPath = validatePath(path);
     try {
       return mMasterClient.user_createFileOnCheckpoint(cleanedPath, underfsPath);
     } catch (TException e) {
@@ -580,7 +589,7 @@ public class TachyonFS {
     if (!mConnected) {
       return -1;
     }
-    String cleanedPath = cleanPathIOException(path);
+    String cleanedPath = validatePath(path);
     if (columns < 1 || columns > CommonConf.get().MAX_COLUMNS) {
       throw new IOException("Column count " + columns + " is smaller than 1 or " + "bigger than "
           + CommonConf.get().MAX_COLUMNS);
@@ -854,7 +863,7 @@ public class TachyonFS {
       return null;
     }
     ClientFileInfo ret;
-    String cleanedPath = cleanPathIOException(path);
+    String cleanedPath = validatePath(path);
     if (useCachedMetadata && mCachedClientFileInfos.containsKey(cleanedPath)) {
       return mCachedClientFileInfos.get(path);
     }
@@ -940,7 +949,7 @@ public class TachyonFS {
    */
   public synchronized TachyonFile getFile(String path, boolean useCachedMetadata)
       throws IOException {
-    String cleanedPath = cleanPathIOException(path);
+    String cleanedPath = validatePath(path);
     ClientFileInfo clientFileInfo = getClientFileInfo(cleanedPath, useCachedMetadata);
     if (clientFileInfo == null) {
       return null;
@@ -1036,7 +1045,7 @@ public class TachyonFS {
       return -1;
     }
     int fid = -1;
-    String cleanedPath = cleanPathIOException(path);
+    String cleanedPath = validatePath(path);
     try {
       fid = mMasterClient.user_getFileId(cleanedPath);
     } catch (TException e) {
@@ -1219,7 +1228,7 @@ public class TachyonFS {
    */
   public synchronized RawTable getRawTable(String path) throws IOException {
     connect();
-    String cleanedPath = cleanPathIOException(path);
+    String cleanedPath = validatePath(path);
     ClientRawTableInfo clientRawTableInfo;
     try {
       clientRawTableInfo = mMasterClient.user_getClientRawTableInfoByPath(cleanedPath);
@@ -1444,7 +1453,7 @@ public class TachyonFS {
     if (!mConnected) {
       return false;
     }
-    String cleanedPath = cleanPathIOException(path);
+    String cleanedPath = validatePath(path);
     try {
       return mMasterClient.user_mkdir(cleanedPath);
     } catch (TException e) {

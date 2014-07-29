@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 
 import tachyon.Constants;
 import tachyon.PrefixList;
+import tachyon.TachyonURI;
 import tachyon.client.TachyonFS;
 import tachyon.client.TachyonFile;
 import tachyon.client.WriteType;
@@ -94,7 +95,7 @@ abstract class AbstractTFS extends FileSystem {
           throw new IOException("Failed to delete existing data " + cPath);
         }
       }
-      int fileId = mTFS.createFile(path, blockSize);
+      int fileId = mTFS.createFile(new TachyonURI(path), blockSize);
       TachyonFile file = mTFS.getFile(fileId);
       file.setUFSConf(getConf());
       return new FSDataOutputStream(file.getOutStream(WriteType.CACHE_THROUGH), null);
@@ -102,7 +103,7 @@ abstract class AbstractTFS extends FileSystem {
 
     if (cPath.toString().contains(FIRST_COM_PATH) && !cPath.toString().contains("SUCCESS")) {
       String path = Utils.getPathWithoutScheme(cPath);
-      mTFS.createFile(path, blockSize);
+      mTFS.createFile(new TachyonURI(path), blockSize);
       path = path.substring(path.indexOf(FIRST_COM_PATH) + FIRST_COM_PATH.length());
       path = path.substring(0, path.indexOf(Constants.PATH_SEPARATOR));
       int depId = Integer.parseInt(path);
@@ -124,7 +125,7 @@ abstract class AbstractTFS extends FileSystem {
     }
     if (cPath.toString().contains(RECOMPUTE_PATH) && !cPath.toString().contains("SUCCESS")) {
       String path = Utils.getPathWithoutScheme(cPath);
-      mTFS.createFile(path, blockSize);
+      mTFS.createFile(new TachyonURI(path), blockSize);
       path = path.substring(path.indexOf(RECOMPUTE_PATH) + RECOMPUTE_PATH.length());
       path = path.substring(0, path.indexOf(Constants.PATH_SEPARATOR));
       int depId = Integer.parseInt(path);
@@ -151,7 +152,7 @@ abstract class AbstractTFS extends FileSystem {
         fileId = mTFS.getFileId(path);
         type = WriteType.MUST_CACHE;
       } else {
-        fileId = mTFS.createFile(path, blockSize);
+        fileId = mTFS.createFile(new TachyonURI(path), blockSize);
       }
 
       TachyonFile file = mTFS.getFile(fileId);

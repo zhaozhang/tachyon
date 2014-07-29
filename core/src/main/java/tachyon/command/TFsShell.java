@@ -28,6 +28,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.thrift.TException;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.client.InStream;
 import tachyon.client.OutStream;
 import tachyon.client.ReadType;
@@ -122,7 +123,7 @@ public class TFsShell {
 
   private int copyPath(File src, TachyonFS tachyonClient, String dstPath) throws IOException {
     if (!src.isDirectory()) {
-      int fileId = tachyonClient.createFile(dstPath);
+      int fileId = tachyonClient.createFile(new TachyonURI(dstPath));
       if (fileId == -1) {
         return -1;
       }
@@ -639,7 +640,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    TachyonFile tFile = tachyonClient.getFile(tachyonClient.createFile(file));
+    TachyonFile tFile = tachyonClient.getFile(tachyonClient.createFile(new TachyonURI(file)));
     OutputStream out = tFile.getOutStream(WriteType.THROUGH);
     out.close();
     System.out.println(path + " has been created");

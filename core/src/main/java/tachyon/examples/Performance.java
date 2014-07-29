@@ -32,6 +32,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.Version;
 import tachyon.client.OutStream;
 import tachyon.client.ReadType;
@@ -61,13 +62,13 @@ public class Performance {
   private static String RESULT_PREFIX = null;
   private static long[] Results = new long[RESULT_ARRAY_SIZE];
   private static int BASE_FILE_NUMBER = 0;
- 
+
   private static boolean TACHYON_STREAMING_READ = false;
 
   public static void createFiles() throws IOException {
     long startTimeMs = CommonUtils.getCurrentMs();
     for (int k = 0; k < THREADS; k ++) {
-      int fileId = MTC.createFile(FILE_NAME + (k + BASE_FILE_NUMBER));
+      int fileId = MTC.createFile(new TachyonURI(FILE_NAME + (k + BASE_FILE_NUMBER)));
       CommonUtils.printTimeTakenMs(startTimeMs, LOG, "user_createFiles with fileId " + fileId);
     }
   }

@@ -16,6 +16,7 @@ package tachyon.client.table;
 
 import java.io.IOException;
 
+import tachyon.TachyonURI;
 import tachyon.client.TachyonFS;
 import tachyon.client.TachyonFile;
 import tachyon.master.MasterInfo;
@@ -42,8 +43,8 @@ public class RawColumn {
 
   // TODO creating file here should be based on id.
   public boolean createPartition(int pId) throws IOException {
-    return TFS.createFile(CommonUtils.concat(RAW_TABLE.getPath(), MasterInfo.COL + COLUMN_INDEX,
-        pId)) > 0;
+    return TFS.createFile(new TachyonURI(CommonUtils.concat(RAW_TABLE.getPath(), MasterInfo.COL
+        + COLUMN_INDEX, pId))) > 0;
   }
 
   // TODO creating file here should be based on id.

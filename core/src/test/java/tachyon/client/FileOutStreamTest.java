@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import tachyon.TachyonURI;
 import tachyon.TestUtils;
 import tachyon.UnderFileSystem;
 import tachyon.UnderFileSystemCluster;
@@ -69,7 +70,7 @@ public class FileOutStreamTest {
 
   private void writeTest1Util(String filePath, WriteType op, int len) throws InvalidPathException,
       FileAlreadyExistException, IOException {
-    int fileId = mTfs.createFile(filePath);
+    int fileId = mTfs.createFile(new TachyonURI(filePath));
     TachyonFile file = mTfs.getFile(fileId);
     OutStream os = file.getOutStream(op);
     Assert.assertTrue(os instanceof FileOutStream);
@@ -118,7 +119,7 @@ public class FileOutStreamTest {
 
   private void writeTest2Util(String filePath, WriteType op, int len) throws InvalidPathException,
       FileAlreadyExistException, IOException {
-    int fileId = mTfs.createFile(filePath);
+    int fileId = mTfs.createFile(new TachyonURI(filePath));
     TachyonFile file = mTfs.getFile(fileId);
     OutStream os = file.getOutStream(op);
     Assert.assertTrue(os instanceof FileOutStream);
@@ -165,7 +166,7 @@ public class FileOutStreamTest {
 
   private void writeTest3Util(String filePath, WriteType op, int len) throws InvalidPathException,
       FileAlreadyExistException, IOException {
-    int fileId = mTfs.createFile(filePath);
+    int fileId = mTfs.createFile(new TachyonURI(filePath));
     TachyonFile file = mTfs.getFile(fileId);
     OutStream os = file.getOutStream(op);
     Assert.assertTrue(os instanceof FileOutStream);

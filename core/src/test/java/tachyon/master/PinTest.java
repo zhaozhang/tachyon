@@ -1,15 +1,19 @@
 package tachyon.master;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertEquals;
-import com.google.common.collect.Sets;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import tachyon.client.TachyonFS;
 
-import java.io.IOException;
+import com.google.common.collect.Sets;
+
+import tachyon.TachyonURI;
+import tachyon.client.TachyonFS;
 
 public class PinTest {
 
@@ -39,7 +43,7 @@ public class PinTest {
     mTfs.mkdir("/myFolder");
     int dir1Id = mTfs.getFileId("/myFolder");
 
-    int fileId = mTfs.createFile("/myFolder/myFile");
+    int fileId = mTfs.createFile(new TachyonURI("/myFolder/myFile"));
     assertFalse(mTfs.getFile(fileId).needPin());
 
     mTfs.pinFile(fileId);
@@ -75,7 +79,7 @@ public class PinTest {
     mTfs.pinFile(rootId);
 
     // Child file should be pinned
-    int file0Id = mTfs.createFile("/file0");
+    int file0Id = mTfs.createFile(new TachyonURI("/file0"));
     assertTrue(mMasterInfo.getClientFileInfo(file0Id).isPinned);
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(file0Id));
 
@@ -85,7 +89,7 @@ public class PinTest {
     assertTrue(mMasterInfo.getClientFileInfo(folderId).isPinned);
 
     // Granchild file also pinned
-    int file1Id = mTfs.createFile("/folder/file1");
+    int file1Id = mTfs.createFile(new TachyonURI("/folder/file1"));
     assertTrue(mMasterInfo.getClientFileInfo(file1Id).isPinned);
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(file0Id, file1Id));
 
@@ -96,12 +100,12 @@ public class PinTest {
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(file0Id));
 
     // And new grandchildren should be unpinned too.
-    int file2Id = mTfs.createFile("/folder/file2");
+    int file2Id = mTfs.createFile(new TachyonURI("/folder/file2"));
     assertFalse(mMasterInfo.getClientFileInfo(file2Id).isPinned);
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(file0Id));
 
     // But toplevel children still should be pinned!
-    int file3Id = mTfs.createFile("/file3");
+    int file3Id = mTfs.createFile(new TachyonURI("/file3"));
     assertTrue(mMasterInfo.getClientFileInfo(file3Id).isPinned);
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(file0Id, file3Id));
   }

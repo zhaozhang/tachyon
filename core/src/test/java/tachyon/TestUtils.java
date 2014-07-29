@@ -27,15 +27,15 @@ public final class TestUtils {
    * Create a simple file with <code>len</code> bytes.
    * 
    * @param tfs
-   * @param fileName
+   * @param path
    * @param op
    * @param len
    * @return created file id.
    * @throws IOException
    */
-  public static int createByteFile(TachyonFS tfs, String fileName, WriteType op, int len)
+  public static int createByteFile(TachyonFS tfs, String path, WriteType op, int len)
       throws IOException {
-    int fileId = tfs.createFile(fileName);
+    int fileId = tfs.createFile(new TachyonURI(path));
     TachyonFile file = tfs.getFile(fileId);
     OutStream os = file.getOutStream(op);
 
@@ -51,16 +51,16 @@ public final class TestUtils {
    * Create a simple file with <code>len</code> bytes.
    * 
    * @param tfs
-   * @param fileName
+   * @param path
    * @param op
    * @param len
    * @param blockCapacityByte
    * @return created file id.
    * @throws IOException
    */
-  public static int createByteFile(TachyonFS tfs, String fileName, WriteType op, int len,
+  public static int createByteFile(TachyonFS tfs, String path, WriteType op, int len,
       long blockCapacityByte) throws IOException {
-    int fileId = tfs.createFile(fileName, blockCapacityByte);
+    int fileId = tfs.createFile(new TachyonURI(path), blockCapacityByte);
     TachyonFile file = tfs.getFile(fileId);
     OutStream os = file.getOutStream(op);
 

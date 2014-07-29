@@ -21,6 +21,7 @@ import java.nio.ByteOrder;
 import org.apache.log4j.Logger;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.Version;
 import tachyon.client.OutStream;
 import tachyon.client.TachyonByteBuffer;
@@ -58,7 +59,7 @@ public class BasicOperations {
   public static void createFile() throws IOException {
     LOG.debug("Creating file...");
     long startTimeMs = CommonUtils.getCurrentMs();
-    int fileId = sTachyonClient.createFile(sFilePath);
+    int fileId = sTachyonClient.createFile(new TachyonURI(sFilePath));
     CommonUtils.printTimeTakenMs(startTimeMs, LOG, "createFile with fileId " + fileId);
   }
 

@@ -23,6 +23,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import tachyon.TachyonURI;
 import tachyon.TestUtils;
 import tachyon.conf.WorkerConf;
 import tachyon.master.LocalTachyonCluster;
@@ -204,7 +205,7 @@ public class TachyonFileTest {
 
   @Test
   public void writeEmptyFileTest() throws IOException {
-    Assert.assertEquals(2, mTfs.createFile("/emptyFile"));
+    Assert.assertEquals(2, mTfs.createFile(new TachyonURI("/emptyFile")));
     Assert.assertTrue(mTfs.exist("/emptyFile"));
     TachyonFile file = mTfs.getFile("/emptyFile");
     Assert.assertEquals(0, file.length());
