@@ -91,7 +91,7 @@ public class JournalTest {
     TestUtils.createByteFile(mTfs, "/xyz", WriteType.THROUGH, 10);
     ClientFileInfo fInfo = mLocalTachyonCluster.getMasterInfo().getClientFileInfo("/xyz");
     String ckPath = fInfo.getUfsPath();
-    mTfs.createFile("/xyz_ck", ckPath);
+    mTfs.createFile(new TachyonURI("/xyz_ck"), new TachyonURI(ckPath));
     ClientFileInfo ckFileInfo = mLocalTachyonCluster.getMasterInfo().getClientFileInfo("/xyz_ck");
     mLocalTachyonCluster.stopTFS();
     AddCheckpointTestUtil(fInfo, ckFileInfo);
@@ -441,7 +441,7 @@ public class JournalTest {
    */
   @Test
   public void TableTest() throws Exception {
-    mTfs.createRawTable("/xyz", 10);
+    mTfs.createRawTable(new TachyonURI("/xyz"), 10);
     ClientFileInfo fInfo = mLocalTachyonCluster.getMasterInfo().getClientFileInfo("/xyz");
     mLocalTachyonCluster.stopTFS();
     TableTest(fInfo);

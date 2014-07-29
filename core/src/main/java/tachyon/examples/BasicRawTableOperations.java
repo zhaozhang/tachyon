@@ -21,6 +21,7 @@ import java.nio.ByteOrder;
 import org.apache.log4j.Logger;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.Version;
 import tachyon.client.OutStream;
 import tachyon.client.TachyonByteBuffer;
@@ -49,7 +50,7 @@ public class BasicRawTableOperations {
       data.putInt(k);
     }
     data.flip();
-    mId = sTachyonClient.createRawTable(sTablePath, 3, data);
+    mId = sTachyonClient.createRawTable(new TachyonURI(sTablePath), 3, data);
   }
 
   public static void main(String[] args) throws IOException {
@@ -97,7 +98,7 @@ public class BasicRawTableOperations {
   }
 
   public static void write() throws IOException {
-    RawTable rawTable = sTachyonClient.getRawTable(sTablePath);
+    RawTable rawTable = sTachyonClient.getRawTable(new TachyonURI(sTablePath));
 
     LOG.debug("Writing data...");
     for (int column = 0; column < COLS; column ++) {

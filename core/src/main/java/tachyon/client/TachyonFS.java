@@ -543,14 +543,14 @@ public class TachyonFS {
    * @throws IOException
    *           If file already exists, or path is invalid.
    */
-  public synchronized int createFile(String path, String underfsPath) throws IOException {
+  public synchronized int createFile(TachyonURI path, TachyonURI underfsPath) throws IOException {
+    validatePath(path);
     connect();
     if (!mConnected) {
       return -1;
     }
-    String cleanedPath = validatePath(path);
     try {
-      return mMasterClient.user_createFileOnCheckpoint(cleanedPath, underfsPath);
+      return mMasterClient.user_createFileOnCheckpoint(path.toString(), underfsPath.toString());
     } catch (TException e) {
       mConnected = false;
       throw new IOException(e);
@@ -567,7 +567,7 @@ public class TachyonFS {
    * @return the id if succeed, -1 otherwise
    * @throws IOException
    */
-  public synchronized int createRawTable(String path, int columns) throws IOException {
+  public synchronized int createRawTable(TachyonURI path, int columns) throws IOException {
     return createRawTable(path, columns, ByteBuffer.allocate(0));
   }
 
@@ -583,20 +583,20 @@ public class TachyonFS {
    * @return the id if succeed, -1 otherwise
    * @throws IOException
    */
-  public synchronized int createRawTable(String path, int columns, ByteBuffer metadata)
+  public synchronized int createRawTable(TachyonURI path, int columns, ByteBuffer metadata)
       throws IOException {
+    validatePath(path);
     connect();
     if (!mConnected) {
       return -1;
     }
-    String cleanedPath = validatePath(path);
     if (columns < 1 || columns > CommonConf.get().MAX_COLUMNS) {
       throw new IOException("Column count " + columns + " is smaller than 1 or " + "bigger than "
           + CommonConf.get().MAX_COLUMNS);
     }
 
     try {
-      return mMasterClient.user_createRawTable(cleanedPath, columns, metadata);
+      return mMasterClient.user_createRawTable(path.toString(), columns, metadata);
     } catch (TException e) {
       LOG.error(e.getMessage());
       mConnected = false;
@@ -1226,12 +1226,12 @@ public class TachyonFS {
    * @return the RawTable
    * @throws IOException
    */
-  public synchronized RawTable getRawTable(String path) throws IOException {
+  public synchronized RawTable getRawTable(TachyonURI path) throws IOException {
+    validatePath(path);
     connect();
-    String cleanedPath = validatePath(path);
     ClientRawTableInfo clientRawTableInfo;
     try {
-      clientRawTableInfo = mMasterClient.user_getClientRawTableInfoByPath(cleanedPath);
+      clientRawTableInfo = mMasterClient.user_getClientRawTableInfoByPath(path.toString());
     } catch (TException e) {
       mConnected = false;
       throw new IOException(e);

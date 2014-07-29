@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import tachyon.Constants;
 import tachyon.Pair;
 import tachyon.PrefixList;
+import tachyon.TachyonURI;
 import tachyon.UnderFileSystem;
 import tachyon.Version;
 import tachyon.client.TachyonFS;
@@ -37,7 +38,7 @@ public class UnderfsUtils {
   /**
    * Build a new path relative to a given TFS root by retrieving the given path relative to
    * the ufsRootPath.
-   *
+   * 
    * @param tfsRootPath
    *          the destination point in TFS to load the under FS path onto
    * @param ufsRootPath
@@ -58,7 +59,7 @@ public class UnderfsUtils {
   /**
    * Load files under path "ufsAddrRootPath" (excluding excludePathPrefix relative to the path)
    * to the given tfs under a given destination path.
-   *
+   * 
    * @param tfsAddrRootPath
    *          the TFS address and path to load the src files, like "tachyon://host:port/dest".
    * @param ufsAddrRootPath
@@ -72,7 +73,7 @@ public class UnderfsUtils {
     Pair<String, String> tfsPair = UnderFileSystem.parse(tfsAddrRootPath);
     String tfsAddress = tfsPair.getFirst();
     String tfsRootPath = tfsPair.getSecond();
-    TachyonFS tfs = TachyonFS.get(tfsAddress);
+    TachyonFS tfs = TachyonFS.get(new TachyonURI(tfsAddress));
 
     PrefixList excludePathPrefix = new PrefixList(excludePaths, ";");
 
@@ -82,7 +83,7 @@ public class UnderfsUtils {
   /**
    * Load files under path "ufsAddress/ufsRootPath" (excluding excludePathPrefix)
    * to the given tfs under the given tfsRootPath directory.
-   *
+   * 
    * @param tfs
    *          the TFS handler created out of address like "tachyon://host:port"
    * @param tfsRootPath
@@ -140,7 +141,7 @@ public class UnderfsUtils {
           LOG.info("File " + tfsPath + " already exists in Tachyon.");
           continue;
         }
-        int fileId = tfs.createFile(tfsPath, ufsPath);
+        int fileId = tfs.createFile(new TachyonURI(tfsPath), new TachyonURI(ufsPath));
         if (fileId == -1) {
           LOG.info("Failed to create tachyon file: " + tfsPath);
         } else {
