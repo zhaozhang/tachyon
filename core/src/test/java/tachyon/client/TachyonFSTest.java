@@ -63,7 +63,7 @@ public class TachyonFSTest {
 
   @Test
   public void getRootTest() throws IOException {
-    Assert.assertEquals(1, mTfs.getFileId("/"));
+    Assert.assertEquals(1, mTfs.getFileId(new TachyonURI("/")));
   }
 
   @Test
@@ -79,11 +79,11 @@ public class TachyonFSTest {
   @Test
   public void createFileTest2() throws IOException {
     Assert.assertEquals(3, mTfs.createFile(new TachyonURI("/root/testFile1")));
-    Assert.assertTrue(mTfs.exist("/root/testFile1"));
+    Assert.assertTrue(mTfs.exist(new TachyonURI("/root/testFile1")));
     Assert.assertEquals(4, mTfs.createFile(new TachyonURI("/root/testFile2")));
-    Assert.assertTrue(mTfs.exist("/root/testFile2"));
+    Assert.assertTrue(mTfs.exist(new TachyonURI("/root/testFile2")));
     Assert.assertEquals(5, mTfs.createFile(new TachyonURI("/root/testFile3")));
-    Assert.assertTrue(mTfs.exist("/root/testFile3"));
+    Assert.assertTrue(mTfs.exist(new TachyonURI("/root/testFile3")));
   }
 
   @Test
@@ -93,8 +93,9 @@ public class TachyonFSTest {
     OutputStream os = underFs.create(tempFolder + "/temp", 100);
     os.close();
     mTfs.createFile(new TachyonURI("/abc"), new TachyonURI(tempFolder + "/temp"));
-    Assert.assertTrue(mTfs.exist("/abc"));
-    Assert.assertEquals(tempFolder + "/temp", mTfs.getUfsPath(mTfs.getFileId("/abc")));
+    Assert.assertTrue(mTfs.exist(new TachyonURI("/abc")));
+    Assert.assertEquals(tempFolder + "/temp",
+        mTfs.getUfsPath(mTfs.getFileId(new TachyonURI("/abc"))));
   }
 
   @Test(expected = IOException.class)
@@ -188,14 +189,14 @@ public class TachyonFSTest {
     // Delete non-existing files.
     Assert.assertTrue(mTfs.delete(2, false));
     Assert.assertTrue(mTfs.delete(2, true));
-    Assert.assertTrue(mTfs.delete("/abc", false));
-    Assert.assertTrue(mTfs.delete("/abc", true));
+    Assert.assertTrue(mTfs.delete(new TachyonURI("/abc"), false));
+    Assert.assertTrue(mTfs.delete(new TachyonURI("/abc"), true));
 
     for (int k = 0; k < 5; k ++) {
       int fileId = TestUtils.createByteFile(mTfs, "/file" + k, WriteType.MUST_CACHE, writeBytes);
       TachyonFile file = mTfs.getFile(fileId);
       Assert.assertTrue(file.isInMemory());
-      Assert.assertTrue(mTfs.exist("/file" + k));
+      Assert.assertTrue(mTfs.exist(new TachyonURI("/file" + k)));
 
       workers = mTfs.getWorkersInfo();
       Assert.assertEquals(1, workers.size());
@@ -204,9 +205,9 @@ public class TachyonFSTest {
     }
 
     for (int k = 0; k < 5; k ++) {
-      int fileId = mTfs.getFileId("/file" + k);
+      int fileId = mTfs.getFileId(new TachyonURI("/file" + k));
       mTfs.delete(fileId, true);
-      Assert.assertFalse(mTfs.exist("/file" + k));
+      Assert.assertFalse(mTfs.exist(new TachyonURI("/file" + k)));
 
       CommonUtils.sleepMs(null, SLEEP_MS);
       workers = mTfs.getWorkersInfo();
@@ -392,10 +393,10 @@ public class TachyonFSTest {
   public void renameFileTest1() throws IOException {
     int fileId = mTfs.createFile(new TachyonURI("/root/testFile1"));
     for (int k = 1; k < 10; k ++) {
-      Assert.assertTrue(mTfs.exist("/root/testFile" + k));
+      Assert.assertTrue(mTfs.exist(new TachyonURI("/root/testFile" + k)));
       Assert.assertTrue(mTfs.rename("/root/testFile" + k, "/root/testFile" + (k + 1)));
-      Assert.assertEquals(fileId, mTfs.getFileId("/root/testFile" + (k + 1)));
-      Assert.assertFalse(mTfs.exist("/root/testFile" + k));
+      Assert.assertEquals(fileId, mTfs.getFileId(new TachyonURI("/root/testFile" + (k + 1))));
+      Assert.assertFalse(mTfs.exist(new TachyonURI("/root/testFile" + k)));
     }
   }
 
@@ -408,12 +409,12 @@ public class TachyonFSTest {
   @Test
   public void renameFileTest3() throws IOException {
     int fileId = mTfs.createFile(new TachyonURI("/root/testFile0"));
-    TachyonFile file = mTfs.getFile("/root/testFile0");
+    TachyonFile file = mTfs.getFile(new TachyonURI("/root/testFile0"));
     for (int k = 1; k < 10; k ++) {
-      Assert.assertTrue(mTfs.exist("/root/testFile" + (k - 1)));
+      Assert.assertTrue(mTfs.exist(new TachyonURI("/root/testFile" + (k - 1))));
       Assert.assertTrue(file.rename("/root/testFile" + k));
-      Assert.assertEquals(fileId, mTfs.getFileId("/root/testFile" + k));
-      Assert.assertFalse(mTfs.exist("/root/testFile" + (k - 1)));
+      Assert.assertEquals(fileId, mTfs.getFileId(new TachyonURI("/root/testFile" + k)));
+      Assert.assertFalse(mTfs.exist(new TachyonURI("/root/testFile" + (k - 1))));
     }
   }
 

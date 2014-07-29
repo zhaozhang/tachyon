@@ -14,9 +14,22 @@
  */
 package tachyon.web;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
+
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.client.InStream;
 import tachyon.client.ReadType;
 import tachyon.client.TachyonFS;
@@ -27,16 +40,6 @@ import tachyon.thrift.ClientFileInfo;
 import tachyon.thrift.FileDoesNotExistException;
 import tachyon.thrift.InvalidPathException;
 import tachyon.util.CommonUtils;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Servlet that provides data for browsing the file system.
@@ -107,7 +110,7 @@ public class WebInterfaceBrowseServlet extends HttpServlet {
         Constants.HEADER + mMasterInfo.getMasterAddress().getHostName() + ":"
             + mMasterInfo.getMasterAddress().getPort();
     TachyonFS tachyonClient = TachyonFS.get(masterAddress);
-    TachyonFile tFile = tachyonClient.getFile(path);
+    TachyonFile tFile = tachyonClient.getFile(new TachyonURI(path));
     String fileData = null;
     if (tFile == null) {
       throw new FileDoesNotExistException(path);
@@ -217,7 +220,7 @@ public class WebInterfaceBrowseServlet extends HttpServlet {
       try {
         if (!toAdd.getIsDirectory() && fileInfo.getLength() > 0) {
           toAdd
-          .setFileLocations(mMasterInfo.getFileLocations(toAdd.getId()).get(0).getLocations());
+              .setFileLocations(mMasterInfo.getFileLocations(toAdd.getId()).get(0).getLocations());
         }
       } catch (FileDoesNotExistException fdne) {
         request.setAttribute("invalidPathError", "Error: Invalid Path " + fdne.getMessage());

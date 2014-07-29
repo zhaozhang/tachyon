@@ -51,14 +51,15 @@ public class JournalTest {
    */
   @Test
   public void AddBlockTest() throws Exception {
-    mTfs.createFile(new TachyonURI("/xyz"), 64);
-    TachyonFile file = mTfs.getFile("/xyz");
+    TachyonURI uri = new TachyonURI("/xyz");
+    mTfs.createFile(uri, 64);
+    TachyonFile file = mTfs.getFile(uri);
     OutputStream os = file.getOutStream(WriteType.MUST_CACHE);
     for (int k = 0; k < 1000; k ++) {
       os.write(k);
     }
     os.close();
-    ClientFileInfo fInfo = mLocalTachyonCluster.getMasterInfo().getClientFileInfo("/xyz");
+    ClientFileInfo fInfo = mLocalTachyonCluster.getMasterInfo().getClientFileInfo(uri.getPath());
     mLocalTachyonCluster.stopTFS();
     AddBlockTestUtil(fInfo);
     String editLogPath = mLocalTachyonCluster.getEditLogPath();
@@ -169,11 +170,11 @@ public class JournalTest {
       for (int j = 0; j < 10; j ++) {
         mTfs.createFile(new TachyonURI("/i" + i + "/j" + j), (i + j + 1) * 64);
         if (j >= 5) {
-          mTfs.delete("/i" + i + "/j" + j, false);
+          mTfs.delete(new TachyonURI("/i" + i + "/j" + j), false);
         }
       }
       if (i >= 5) {
-        mTfs.delete("/i" + i, true);
+        mTfs.delete(new TachyonURI("/i" + i), true);
       }
     }
     mLocalTachyonCluster.stopTFS();
@@ -278,7 +279,7 @@ public class JournalTest {
   @Test
   public void PinTest() throws Exception {
     mTfs.mkdir("/myFolder");
-    int folderId = mTfs.getFileId("/myFolder");
+    int folderId = mTfs.getFileId(new TachyonURI("/myFolder"));
     mTfs.setPinned(folderId, true);
     int file0Id = mTfs.createFile(new TachyonURI("/myFolder/file0"), 64);
     mTfs.setPinned(file0Id, false);

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 
 import tachyon.Constants;
+import tachyon.TachyonURI;
 import tachyon.Version;
 import tachyon.client.TachyonByteBuffer;
 import tachyon.client.TachyonFS;
@@ -68,7 +69,7 @@ public class BasicCheckpoint {
     for (int i = 0; i < sFiles; i ++) {
       String filePath = sFileFolder + "/part-" + i;
       LOG.debug("Reading data from " + filePath);
-      TachyonFile file = sTachyonClient.getFile(filePath);
+      TachyonFile file = sTachyonClient.getFile(new TachyonURI(filePath));
       TachyonByteBuffer buf = file.readByteBuffer();
       if (buf == null) {
         file.recache();
@@ -85,7 +86,7 @@ public class BasicCheckpoint {
   public static void writeFile() throws IOException {
     for (int i = 0; i < sFiles; i ++) {
       String filePath = sFileFolder + "/part-" + i;
-      TachyonFile file = sTachyonClient.getFile(filePath);
+      TachyonFile file = sTachyonClient.getFile(new TachyonURI(filePath));
       OutputStream os = file.getOutStream(WriteType.ASYNC_THROUGH);
 
       ByteBuffer buf = ByteBuffer.allocate(80);

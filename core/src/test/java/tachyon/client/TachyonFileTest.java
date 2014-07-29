@@ -120,7 +120,7 @@ public class TachyonFileTest {
 
     CommonUtils.sleepMs(null, WORKER_TO_MASTER_HEARTBEAT_INTERVAL_MS);
     for (int k = 0; k < MAX_FILES; k ++) {
-      TachyonFile file = mTfs.getFile("/file" + k);
+      TachyonFile file = mTfs.getFile(new TachyonURI("/file" + k));
       Assert.assertTrue(file.isInMemory());
     }
 
@@ -132,11 +132,11 @@ public class TachyonFileTest {
     }
 
     CommonUtils.sleepMs(null, WORKER_TO_MASTER_HEARTBEAT_INTERVAL_MS);
-    TachyonFile file = mTfs.getFile("/file" + 0);
+    TachyonFile file = mTfs.getFile(new TachyonURI("/file" + 0));
     Assert.assertFalse(file.isInMemory());
 
     for (int k = 1; k < MAX_FILES + 1; k ++) {
-      file = mTfs.getFile("/file" + k);
+      file = mTfs.getFile(new TachyonURI("/file" + k));
       Assert.assertTrue(file.isInMemory());
     }
   }
@@ -152,7 +152,7 @@ public class TachyonFileTest {
   public void isInMemoryTest3() throws InvalidPathException, FileAlreadyExistException,
       IOException {
     mTfs.mkdir("/pin");
-    mTfs.pinFile(mTfs.getFileId("/pin"));
+    mTfs.pinFile(mTfs.getFileId(new TachyonURI("/pin")));
 
     int fileId =
         TestUtils.createByteFile(mTfs, "/pin/file", WriteType.MUST_CACHE, USER_QUOTA_UNIT_BYTES);
@@ -168,12 +168,12 @@ public class TachyonFileTest {
 
     CommonUtils.sleepMs(null, WORKER_TO_MASTER_HEARTBEAT_INTERVAL_MS);
 
-    file = mTfs.getFile("/pin/file");
+    file = mTfs.getFile(new TachyonURI("/pin/file"));
     Assert.assertTrue(file.isInMemory());
-    file = mTfs.getFile("/file0");
+    file = mTfs.getFile(new TachyonURI("/file0"));
     Assert.assertFalse(file.isInMemory());
     for (int k = 1; k < MAX_FILES; k ++) {
-      file = mTfs.getFile("/file" + k);
+      file = mTfs.getFile(new TachyonURI("/file" + k));
       Assert.assertTrue(file.isInMemory());
     }
   }
@@ -205,9 +205,10 @@ public class TachyonFileTest {
 
   @Test
   public void writeEmptyFileTest() throws IOException {
-    Assert.assertEquals(2, mTfs.createFile(new TachyonURI("/emptyFile")));
-    Assert.assertTrue(mTfs.exist("/emptyFile"));
-    TachyonFile file = mTfs.getFile("/emptyFile");
+    TachyonURI emptyFile = new TachyonURI("/emptyFile");
+    Assert.assertEquals(2, mTfs.createFile(emptyFile));
+    Assert.assertTrue(mTfs.exist(emptyFile));
+    TachyonFile file = mTfs.getFile(emptyFile);
     Assert.assertEquals(0, file.length());
     OutStream os = file.getOutStream(WriteType.CACHE_THROUGH);
     os.close();

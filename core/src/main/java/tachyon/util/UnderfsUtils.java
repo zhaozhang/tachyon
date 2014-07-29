@@ -114,7 +114,7 @@ public class UnderfsUtils {
     String ufsAddress = ufsPair.getFirst();
     String ufsRootPath = ufsPair.getSecond();
 
-    if (!tfs.exist(tfsRootPath)) {
+    if (!tfs.exist(new TachyonURI(tfsRootPath))) {
       tfs.mkdir(tfsRootPath);
       // TODO Add the following.
       // if (tfs.mkdir(tfsRootPath)) {
@@ -137,7 +137,7 @@ public class UnderfsUtils {
       LOG.info("loading: " + ufsPath);
       if (ufs.isFile(ufsPath)) {
         String tfsPath = buildTFSPath(tfsRootPath, ufsAddrRootPath, ufsPath);
-        if (tfs.exist(tfsPath)) {
+        if (tfs.exist(new TachyonURI(tfsPath))) {
           LOG.info("File " + tfsPath + " already exists in Tachyon.");
           continue;
         }
@@ -168,7 +168,7 @@ public class UnderfsUtils {
         // ufsPath is a directory, so only concat the tfsRoot with the relative path
         String tfsPath =
             CommonUtils.concat(tfsRootPath, ufsPath.substring(ufsAddrRootPath.length()));
-        if (!tfs.exist(tfsPath)) {
+        if (!tfs.exist(new TachyonURI(tfsPath))) {
           tfs.mkdir(tfsPath);
           // TODO Add the following.
           // if (tfs.mkdir(tfsPath)) {

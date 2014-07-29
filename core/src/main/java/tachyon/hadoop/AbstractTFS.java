@@ -72,7 +72,7 @@ abstract class AbstractTFS extends FileSystem {
 
     String path = Utils.getPathWithoutScheme(cPath);
     fromHdfsToTachyon(path);
-    int fileId = mTFS.getFileId(path);
+    int fileId = mTFS.getFileId(new TachyonURI(path));
     TachyonFile file = mTFS.getFile(fileId);
 
     if (file.length() > 0) {
@@ -90,8 +90,8 @@ abstract class AbstractTFS extends FileSystem {
 
     if (!CommonConf.get().ASYNC_ENABLED) {
       String path = Utils.getPathWithoutScheme(cPath);
-      if (mTFS.exist(path)) {
-        if (!mTFS.delete(path, false)) {
+      if (mTFS.exist(new TachyonURI(path))) {
+        if (!mTFS.delete(new TachyonURI(path), false)) {
           throw new IOException("Failed to delete existing data " + cPath);
         }
       }
@@ -148,8 +148,8 @@ abstract class AbstractTFS extends FileSystem {
       String path = Utils.getPathWithoutScheme(cPath);
       int fileId;
       WriteType type = WriteType.CACHE_THROUGH;
-      if (mTFS.exist(path)) {
-        fileId = mTFS.getFileId(path);
+      if (mTFS.exist(new TachyonURI(path))) {
+        fileId = mTFS.getFileId(new TachyonURI(path));
         type = WriteType.MUST_CACHE;
       } else {
         fileId = mTFS.createFile(new TachyonURI(path), blockSize);
@@ -176,11 +176,11 @@ abstract class AbstractTFS extends FileSystem {
     LOG.info("delete(" + path + ", " + recursive + ")");
     String tPath = Utils.getPathWithoutScheme(path);
     fromHdfsToTachyon(tPath);
-    return mTFS.delete(tPath, recursive);
+    return mTFS.delete(new TachyonURI(tPath), recursive);
   }
 
   private void fromHdfsToTachyon(String path) throws IOException {
-    if (!mTFS.exist(path)) {
+    if (!mTFS.exist(new TachyonURI(path))) {
       Path hdfsPath = Utils.getHDFSPath(path);
       FileSystem fs = hdfsPath.getFileSystem(getConf());
       if (fs.exists(hdfsPath)) {
@@ -200,7 +200,7 @@ abstract class AbstractTFS extends FileSystem {
 
     String path = Utils.getPathWithoutScheme(file.getPath());
     fromHdfsToTachyon(path);
-    int fileId = mTFS.getFileId(path);
+    int fileId = mTFS.getFileId(new TachyonURI(path));
 
     if (fileId == -1) {
       throw new FileNotFoundException("File does not exist: " + file.getPath());
@@ -243,7 +243,7 @@ abstract class AbstractTFS extends FileSystem {
         + tPath);
 
     fromHdfsToTachyon(tPath);
-    TachyonFile file = mTFS.getFile(tPath);
+    TachyonFile file = mTFS.getFile(new TachyonURI(tPath));
     if (file == null) {
       LOG.info("File does not exist: " + path);
       throw new FileNotFoundException("File does not exist: " + path);
@@ -299,7 +299,7 @@ abstract class AbstractTFS extends FileSystem {
     LOG.info("listStatus(" + path + "): HDFS Path: " + hdfsPath);
 
     fromHdfsToTachyon(tPath);
-    if (!mTFS.exist(tPath)) {
+    if (!mTFS.exist(new TachyonURI(tPath))) {
       throw new FileNotFoundException("File does not exist: " + path);
     }
 
@@ -328,7 +328,7 @@ abstract class AbstractTFS extends FileSystem {
 
     String path = Utils.getPathWithoutScheme(cPath);
     fromHdfsToTachyon(path);
-    int fileId = mTFS.getFileId(path);
+    int fileId = mTFS.getFileId(new TachyonURI(path));
 
     return new FSDataInputStream(new HdfsFileInputStream(mTFS, fileId, Utils.getHDFSPath(path),
         getConf(), bufferSize));

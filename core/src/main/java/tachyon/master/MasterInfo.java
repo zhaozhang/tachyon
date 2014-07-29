@@ -46,6 +46,7 @@ import tachyon.HeartbeatExecutor;
 import tachyon.HeartbeatThread;
 import tachyon.Pair;
 import tachyon.PrefixList;
+import tachyon.TachyonURI;
 import tachyon.UnderFileSystem;
 import tachyon.UnderFileSystem.SpaceType;
 import tachyon.conf.CommonConf;

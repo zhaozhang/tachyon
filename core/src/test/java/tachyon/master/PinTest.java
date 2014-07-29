@@ -38,35 +38,38 @@ public class PinTest {
 
   @Test
   public void recursivePinness() throws Exception {
-    int dir0Id = mTfs.getFileId("/");
+    TachyonURI uri = new TachyonURI("/");
+    int dir0Id = mTfs.getFileId(uri);
 
+    uri = new TachyonURI("/myFolder");
     mTfs.mkdir("/myFolder");
-    int dir1Id = mTfs.getFileId("/myFolder");
+    int dir1Id = mTfs.getFileId(uri);
 
-    int fileId = mTfs.createFile(new TachyonURI("/myFolder/myFile"));
+    uri = new TachyonURI("/myFolder/myFile");
+    int fileId = mTfs.createFile(uri);
     assertFalse(mTfs.getFile(fileId).needPin());
 
     mTfs.pinFile(fileId);
-    assertTrue(mTfs.getFile("/myFolder/myFile").needPin());
+    assertTrue(mTfs.getFile(uri).needPin());
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(fileId));
 
     mTfs.unpinFile(fileId);
-    assertFalse(mTfs.getFile("/myFolder/myFile").needPin());
+    assertFalse(mTfs.getFile(uri).needPin());
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.<Integer> newHashSet());
 
     // Pinning a folder should recursively pin subfolders.
     mTfs.pinFile(dir1Id);
-    assertTrue(mTfs.getFile("/myFolder/myFile").needPin());
+    assertTrue(mTfs.getFile(uri).needPin());
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(fileId));
 
     // Same with unpinning.
     mTfs.unpinFile(dir0Id);
-    assertFalse(mTfs.getFile("/myFolder/myFile").needPin());
+    assertFalse(mTfs.getFile(uri).needPin());
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.<Integer> newHashSet());
 
     // The last pin command always wins.
     mTfs.pinFile(fileId);
-    assertTrue(mTfs.getFile("/myFolder/myFile").needPin());
+    assertTrue(mTfs.getFile(uri).needPin());
     assertEquals(Sets.newHashSet(mMasterInfo.getPinIdList()), Sets.newHashSet(fileId));
   }
 
@@ -75,7 +78,7 @@ public class PinTest {
     // Children should inherit the isPinned value of their parents on creation.
 
     // Pin root
-    int rootId = mTfs.getFileId("/");
+    int rootId = mTfs.getFileId(new TachyonURI("/"));
     mTfs.pinFile(rootId);
 
     // Child file should be pinned
@@ -85,7 +88,7 @@ public class PinTest {
 
     // Child folder should be pinned
     mTfs.mkdir("/folder");
-    int folderId = mTfs.getFileId("/folder");
+    int folderId = mTfs.getFileId(new TachyonURI("/folder"));
     assertTrue(mMasterInfo.getClientFileInfo(folderId).isPinned);
 
     // Granchild file also pinned

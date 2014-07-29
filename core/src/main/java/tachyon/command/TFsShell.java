@@ -69,7 +69,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    TachyonFile tFile = tachyonClient.getFile(file);
+    TachyonFile tFile = tachyonClient.getFile(new TachyonURI(file));
 
     if (tFile == null) {
       System.out.println(file + " does not exist.");
@@ -172,7 +172,7 @@ public class TFsShell {
     String folder = Utils.getFilePath(srcPath);
     File dst = new File(dstPath);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(srcPath));
-    TachyonFile tFile = tachyonClient.getFile(folder);
+    TachyonFile tFile = tachyonClient.getFile(new TachyonURI(folder));
 
     // tachyonClient.getFile() catches FileDoesNotExist exceptions and returns null
     if (tFile == null) {
@@ -216,7 +216,7 @@ public class TFsShell {
   private long[] countHelper(String path) throws IOException {
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
     String folder = Utils.getFilePath(path);
-    TachyonFile tFile = tachyonClient.getFile(folder);
+    TachyonFile tFile = tachyonClient.getFile(new TachyonURI(folder));
 
     if (tFile.isFile()) {
       return new long[] { 1L, 0L, tFile.length() };
@@ -251,7 +251,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    int fileId = tachyonClient.getFileId(file);
+    int fileId = tachyonClient.getFileId(new TachyonURI(file));
     List<ClientBlockInfo> blocks = tachyonClient.getFileBlocks(fileId);
     System.out.println(file + " with file id " + fileId + " have following blocks: ");
     for (ClientBlockInfo block : blocks) {
@@ -276,7 +276,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    int fileId = tachyonClient.getFileId(file);
+    int fileId = tachyonClient.getFileId(new TachyonURI(file));
     List<String> hosts = tachyonClient.getFile(fileId).getLocationHosts();
     System.out.println(file + " with file id " + fileId + " are on nodes: ");
     for (String host : hosts) {
@@ -399,7 +399,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    int fileId = tachyonClient.getFileId(file);
+    int fileId = tachyonClient.getFileId(new TachyonURI(file));
     tachyonClient.pinFile(fileId);
     try {
       tachyonClient.pinFile(fileId);
@@ -476,7 +476,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    int fileId = tachyonClient.getFileId(file);
+    int fileId = tachyonClient.getFileId(new TachyonURI(file));
     tachyonClient.reportLostFile(fileId);
     System.out.println(file + " with file id " + fileId + " has reported been report lost.");
     return 0;
@@ -512,7 +512,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    if (tachyonClient.delete(file, true)) {
+    if (tachyonClient.delete(new TachyonURI(file), true)) {
       System.out.println(file + " has been removed");
       return 0;
     } else {
@@ -599,7 +599,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    TachyonFile tFile = tachyonClient.getFile(file);
+    TachyonFile tFile = tachyonClient.getFile(new TachyonURI(file));
 
     if (tFile == null) {
       System.out.println(file + " does not exist.");
@@ -664,7 +664,7 @@ public class TFsShell {
     String path = argv[1];
     String file = Utils.getFilePath(path);
     TachyonFS tachyonClient = TachyonFS.get(Utils.validatePath(path));
-    int fileId = tachyonClient.getFileId(file);
+    int fileId = tachyonClient.getFileId(new TachyonURI(file));
     try {
       tachyonClient.unpinFile(fileId);
       System.out.println("File '" + file + "' was successfully unpinned.");

@@ -75,7 +75,7 @@ public class BasicOperations {
     buf.flip();
 
     long startTimeMs = CommonUtils.getCurrentMs();
-    TachyonFile file = sTachyonClient.getFile(sFilePath);
+    TachyonFile file = sTachyonClient.getFile(new TachyonURI(sFilePath));
     OutStream os = file.getOutStream(sWriteType);
     os.write(buf.array());
     os.close();
@@ -87,7 +87,7 @@ public class BasicOperations {
     LOG.debug("Reading data...");
 
     long startTimeMs = CommonUtils.getCurrentMs();
-    TachyonFile file = sTachyonClient.getFile(sFilePath);
+    TachyonFile file = sTachyonClient.getFile(new TachyonURI(sFilePath));
     TachyonByteBuffer buf = file.readByteBuffer();
     if (buf == null) {
       file.recache();

@@ -640,14 +640,15 @@ public class TachyonFS {
    *         first place), false otherwise.
    * @throws IOException
    */
-  public synchronized boolean delete(String path, boolean recursive) throws IOException {
+  public synchronized boolean delete(TachyonURI path, boolean recursive) throws IOException {
+    validatePath(path);
     connect();
     if (!mConnected) {
       return false;
     }
 
     try {
-      return mMasterClient.user_delete(path, recursive);
+      return mMasterClient.user_delete(path.toString(), recursive);
     } catch (TException e) {
       throw new IOException(e);
     }
@@ -661,7 +662,7 @@ public class TachyonFS {
    * @return true if it exists, false otherwise
    * @throws IOException
    */
-  public synchronized boolean exist(String path) throws IOException {
+  public synchronized boolean exist(TachyonURI path) throws IOException {
     return getFileId(path) != -1;
   }
 
@@ -856,21 +857,21 @@ public class TachyonFS {
    * @return the ClientFileInfo
    * @throws IOException
    */
-  private synchronized ClientFileInfo getClientFileInfo(String path, boolean useCachedMetadata)
-      throws IOException {
+  private synchronized ClientFileInfo
+      getClientFileInfo(TachyonURI path, boolean useCachedMetadata) throws IOException {
+    validatePath(path);
     connect();
     if (!mConnected) {
       return null;
     }
     ClientFileInfo ret;
-    String cleanedPath = validatePath(path);
-    if (useCachedMetadata && mCachedClientFileInfos.containsKey(cleanedPath)) {
+    if (useCachedMetadata && mCachedClientFileInfos.containsKey(path.toString())) {
       return mCachedClientFileInfos.get(path);
     }
     try {
-      ret = mMasterClient.user_getClientFileInfoByPath(cleanedPath);
+      ret = mMasterClient.user_getClientFileInfoByPath(path.toString());
     } catch (IOException e) {
-      LOG.info(e.getMessage() + cleanedPath);
+      LOG.info(e.getMessage() + path.toString());
       return null;
     } catch (TException e) {
       LOG.error(e.getMessage());
@@ -880,9 +881,9 @@ public class TachyonFS {
 
     // TODO LRU on this Map.
     if (ret != null && useCachedMetadata) {
-      mCachedClientFileInfos.put(cleanedPath, ret);
+      mCachedClientFileInfos.put(path.toString(), ret);
     } else {
-      mCachedClientFileInfos.remove(cleanedPath);
+      mCachedClientFileInfos.remove(path.toString());
     }
 
     return ret;
@@ -939,7 +940,7 @@ public class TachyonFS {
    * @return TachyonFile of the path, or null if the file does not exist.
    * @throws IOException
    */
-  public synchronized TachyonFile getFile(String path) throws IOException {
+  public synchronized TachyonFile getFile(TachyonURI path) throws IOException {
     return getFile(path, false);
   }
 
@@ -947,10 +948,10 @@ public class TachyonFS {
    * Get <code>TachyonFile</code> based on the path. If useCachedMetadata, this will not see
    * changes to the file's pin setting, or other dynamic properties.
    */
-  public synchronized TachyonFile getFile(String path, boolean useCachedMetadata)
+  public synchronized TachyonFile getFile(TachyonURI path, boolean useCachedMetadata)
       throws IOException {
-    String cleanedPath = validatePath(path);
-    ClientFileInfo clientFileInfo = getClientFileInfo(cleanedPath, useCachedMetadata);
+    validatePath(path);
+    ClientFileInfo clientFileInfo = getClientFileInfo(path, useCachedMetadata);
     if (clientFileInfo == null) {
       return null;
     }
@@ -1039,15 +1040,15 @@ public class TachyonFS {
    * @return the file id if exists, -1 otherwise
    * @throws IOException
    */
-  public synchronized int getFileId(String path) throws IOException {
+  public synchronized int getFileId(TachyonURI path) throws IOException {
+    validatePath(path);
     connect();
     if (!mConnected) {
       return -1;
     }
     int fid = -1;
-    String cleanedPath = validatePath(path);
     try {
-      fid = mMasterClient.user_getFileId(cleanedPath);
+      fid = mMasterClient.user_getFileId(path.toString());
     } catch (TException e) {
       LOG.error(e.getMessage());
       mConnected = false;
@@ -1601,7 +1602,7 @@ public class TachyonFS {
     }
 
     try {
-      if (srcPath.equals(dstPath) && exist(srcPath)) {
+      if (srcPath.equals(dstPath) && exist(new TachyonURI(srcPath))) {
         return true;
       }
 

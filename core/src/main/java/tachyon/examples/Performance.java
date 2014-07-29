@@ -195,7 +195,7 @@ public class Performance {
       mBuf.flip();
       for (int pId = mLeft; pId < mRight; pId ++) {
         long startTimeMs = System.currentTimeMillis();
-        TachyonFile file = mTC.getFile(FILE_NAME + (mWorkerId + BASE_FILE_NUMBER));
+        TachyonFile file = mTC.getFile(new TachyonURI(FILE_NAME + (mWorkerId + BASE_FILE_NUMBER)));
         OutStream os = file.getOutStream(WriteType.MUST_CACHE);
         for (int k = 0; k < BLOCKS_PER_FILE; k ++) {
           mBuf.array()[0] = (byte) (k + mWorkerId);
@@ -231,7 +231,7 @@ public class Performance {
         LOG.info("Verifying the reading data...");
 
         for (int pId = mLeft; pId < mRight; pId ++) {
-          TachyonFile file = mTC.getFile(FILE_NAME + mWorkerId);
+          TachyonFile file = mTC.getFile(new TachyonURI(FILE_NAME + mWorkerId));
           buf = file.readByteBuffer();
           IntBuffer intBuf;
           intBuf = buf.DATA.asIntBuffer();
@@ -253,7 +253,8 @@ public class Performance {
       if (TACHYON_STREAMING_READ) {
         for (int pId = mLeft; pId < mRight; pId ++) {
           long startTimeMs = System.currentTimeMillis();
-          TachyonFile file = mTC.getFile(FILE_NAME + (mWorkerId + BASE_FILE_NUMBER));
+          TachyonFile file =
+              mTC.getFile(new TachyonURI(FILE_NAME + (mWorkerId + BASE_FILE_NUMBER)));
           InputStream is = file.getInStream(ReadType.CACHE);
           long len = BLOCKS_PER_FILE * BLOCK_SIZE_BYTES;
 
@@ -268,7 +269,8 @@ public class Performance {
       } else {
         for (int pId = mLeft; pId < mRight; pId ++) {
           long startTimeMs = System.currentTimeMillis();
-          TachyonFile file = mTC.getFile(FILE_NAME + (mWorkerId + BASE_FILE_NUMBER));
+          TachyonFile file =
+              mTC.getFile(new TachyonURI(FILE_NAME + (mWorkerId + BASE_FILE_NUMBER)));
           buf = file.readByteBuffer();
           for (int i = 0; i < BLOCKS_PER_FILE; i ++) {
             buf.DATA.get(mBuf.array());

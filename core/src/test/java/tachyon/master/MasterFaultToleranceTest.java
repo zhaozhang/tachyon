@@ -70,9 +70,9 @@ public class MasterFaultToleranceTest {
   private void faultTestDataCreation(String folderName, List<Pair<Integer, String>> answer)
       throws IOException {
     TachyonFS tfs = mLocalTachyonClusterMultiMaster.getClient();
-    if (!tfs.exist(folderName)) {
+    if (!tfs.exist(new TachyonURI(folderName))) {
       tfs.mkdir(folderName);
-      answer.add(new Pair<Integer, String>(tfs.getFileId(folderName), folderName));
+      answer.add(new Pair<Integer, String>(tfs.getFileId(new TachyonURI(folderName)), folderName));
     }
 
     for (int k = 0; k < 10; k ++) {
@@ -96,7 +96,7 @@ public class MasterFaultToleranceTest {
       Assert.assertEquals(answer.get(k).getSecond(), tfs.getFile(answer.get(k).getFirst())
           .getPath());
       Assert.assertEquals(answer.get(k).getFirst().intValue(),
-          tfs.getFileId(answer.get(k).getSecond()));
+          tfs.getFileId(new TachyonURI(answer.get(k).getSecond())));
     }
   }
 
