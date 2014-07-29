@@ -457,8 +457,8 @@ public class TFsShell {
     if (!srcMasterAddr.startsWith(dstMasterAddr.substring(0, Constants.HEADER.length()))) {
       throw new IOException("The file system of source and destination must be the same");
     }
-    String srcFile = Utils.getFilePath(srcPath);
-    String dstFile = Utils.getFilePath(dstPath);
+    TachyonURI srcFile = new TachyonURI(Utils.getFilePath(srcPath));
+    TachyonURI dstFile = new TachyonURI(Utils.getFilePath(dstPath));
     TachyonFS tachyonClient = TachyonFS.get(srcMasterAddr);
     if (tachyonClient.rename(srcFile, dstFile)) {
       System.out.println("Renamed " + srcFile + " to " + dstFile);

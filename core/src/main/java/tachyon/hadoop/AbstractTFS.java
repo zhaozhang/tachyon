@@ -340,7 +340,7 @@ abstract class AbstractTFS extends FileSystem {
     String hSrc = Utils.getPathWithoutScheme(src);
     String hDst = Utils.getPathWithoutScheme(dst);
     fromHdfsToTachyon(hSrc);
-    return mTFS.rename(hSrc, hDst);
+    return mTFS.rename(new TachyonURI(hSrc), new TachyonURI(hDst));
   }
 
   @Override

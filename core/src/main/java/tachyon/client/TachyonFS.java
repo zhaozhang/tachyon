@@ -1601,18 +1601,20 @@ public class TachyonFS {
    * @return true if succeed, false otherwise.
    * @throws IOException
    */
-  public synchronized boolean rename(String srcPath, String dstPath) throws IOException {
+  public synchronized boolean rename(TachyonURI srcPath, TachyonURI dstPath) throws IOException {
+    validatePath(srcPath);
+    validatePath(dstPath);
     connect();
     if (!mConnected) {
       return false;
     }
 
     try {
-      if (srcPath.equals(dstPath) && exist(new TachyonURI(srcPath))) {
+      if (srcPath.equals(dstPath) && exist(srcPath)) {
         return true;
       }
 
-      return mMasterClient.user_rename(srcPath, dstPath);
+      return mMasterClient.user_rename(srcPath.getPath(), dstPath.getPath());
     } catch (TException e) {
       LOG.error(e.getMessage());
       return false;

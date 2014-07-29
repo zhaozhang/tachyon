@@ -395,7 +395,8 @@ public class TachyonFSTest {
     int fileId = mTfs.createFile(new TachyonURI("/root/testFile1"));
     for (int k = 1; k < 10; k ++) {
       Assert.assertTrue(mTfs.exist(new TachyonURI("/root/testFile" + k)));
-      Assert.assertTrue(mTfs.rename("/root/testFile" + k, "/root/testFile" + (k + 1)));
+      Assert.assertTrue(mTfs.rename(new TachyonURI("/root/testFile" + k), new TachyonURI(
+          "/root/testFile" + (k + 1))));
       Assert.assertEquals(fileId, mTfs.getFileId(new TachyonURI("/root/testFile" + (k + 1))));
       Assert.assertFalse(mTfs.exist(new TachyonURI("/root/testFile" + k)));
     }
@@ -404,7 +405,8 @@ public class TachyonFSTest {
   @Test
   public void renameFileTest2() throws IOException {
     mTfs.createFile(new TachyonURI("/root/testFile1"));
-    Assert.assertTrue(mTfs.rename("/root/testFile1", "/root/testFile1"));
+    Assert.assertTrue(mTfs.rename(new TachyonURI("/root/testFile1"), new TachyonURI(
+        "/root/testFile1")));
   }
 
   @Test
