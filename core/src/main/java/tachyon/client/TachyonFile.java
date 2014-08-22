@@ -179,6 +179,7 @@ public class TachyonFile implements Comparable<TachyonFile> {
     if (isComplete()) {
       throw new IOException("Overriding after completion not supported.");
     }
+
     if (writeType == null) {
       throw new IOException("WriteType can not be null.");
     }
@@ -263,7 +264,7 @@ public class TachyonFile implements Comparable<TachyonFile> {
    * @throws IOException
    */
   public long length() throws IOException {
-    return TFS.getFileLength(FID);
+    return TFS.getFileStatus(FID, null).getLength();
   }
 
   /**
